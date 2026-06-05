@@ -1,0 +1,51 @@
+﻿<ContentPage
+    x:Class="PigulaSchedule.View.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="{Binding LoginTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="16"
+            VerticalOptions="Center">
+
+            <Label
+                FontSize="32"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="Witaj jest dziś " />
+
+            <Label
+                FontSize="100"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="{Binding Day}"
+                
+                />
+
+            <Label
+                FontSize="25"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="{Binding MonthYear}" 
+            
+            />
+
+
+            <Button
+                Command="{Binding ScanScheduleCommand}"
+                Text="Zaloguj się" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}" />
+
+            <Label
+                Text="{Binding ErrorMessage}"
+                TextColor="Red" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
