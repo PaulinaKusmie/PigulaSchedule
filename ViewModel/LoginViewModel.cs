@@ -100,6 +100,23 @@ public partial class LoginViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    public async Task DeleteAsync()
+    {
+        try
+        {
+            AddSchedule addSchedule = new AddSchedule();
+            await addSchedule.DeleteData();
 
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Błąd dodawania harmonogramu: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 
 }

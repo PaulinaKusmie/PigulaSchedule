@@ -43,6 +43,10 @@
                     Command="{Binding ScanScheduleCommand}"
                     Text="Dodaj harmonogram" HorizontalOptions="End" />
 
+                <Button
+                    Command="{Binding DeleteCommand}"
+                    Text="Usuń harmonogram" HorizontalOptions="End" />
+
             </HorizontalStackLayout>
 
        

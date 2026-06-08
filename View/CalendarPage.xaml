@@ -1,8 +1,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PigulaSchedule.View.CalendarPage"
-             xmlns:controls="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar" 
+             xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
+             xmlns:resources="clr-namespace:PigulaSchedule.Resources"
+             xmlns:xcStyles="clr-namespace:XCalendar.Maui.Styles;assembly=XCalendar.Maui"
+             xmlns:local="clr-namespace:PigulaSchedule.Model"
              Title="Kalendarz">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <resources:DayColorConverter x:Key="DayColorConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <VerticalStackLayout>
         <Label
             Text="{Binding Title}"
@@ -10,17 +18,47 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
-        <controls:Calendar
-            Day="{Binding Day}"
-            Month="{Binding Month}"
-            Year="{Binding Year}"
-            VerticalOptions="Fill"
-            HorizontalOptions="Fill">
-            <DataTemplate>
-                <Frame BackgroundColor="{Binding ShiftType, Converter={StaticResource ShiftColorConverter}}">
-                    <Label Text="{Binding Title}" />
-                </Frame>
-            </DataTemplate>
-        </controls:Calendar>
+
+
+        <!--<HorizontalStackLayout Margin="20">
+
+
+            <Button
+                Command="{Binding LeftCommand}"
+                Text="<"VerticalOptions="End" />
+
+            <Button
+                Command="{Binding RightCommand}"
+                Text=">" VerticalOptions="End" />
+
+        </HorizontalStackLayout-->
+
+        <xc:CalendarView
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            Days="{Binding MyCalendar.Days}"
+            DaysOfWeek="{Binding MyCalendar.DayNamesOrder}"
+            NavigatedDate="{Binding MyCalendar.NavigatedDate}">
+            <xc:CalendarView.DayTemplate      >
+                <DataTemplate x:DataType="local:WorkShift">
+                    <Grid>
+                        <BoxView
+                            CornerRadius="30" 
+                            Color="{Binding ShiftColor}"
+                            IsVisible="{Binding IsSelected}"/>
+
+                        <xc:DayView
+                            DateTime="{Binding DateTime}"
+                            IsCurrentMonth="{Binding IsCurrentMonth}"
+                            IsToday="{Binding IsToday}"
+                            IsSelected="{Binding IsSelected}"
+                            IsInvalid="{Binding IsInvalid}"
+                            BackgroundColor="Transparent"
+                            AutoSetStyleBasedOnDayState="False" />
+                    </Grid>
+                </DataTemplate>
+            </xc:CalendarView.DayTemplate>
+        </xc:CalendarView>
+
     </VerticalStackLayout>
 </ContentPage>

@@ -43,8 +43,8 @@ namespace PigulaSchedule
 
             await SaveData(resultSchedule);
         }
-        
-        
+
+
 
         private async Task SaveData(List<ShiftDay> jsonPath)
         {
@@ -56,6 +56,13 @@ namespace PigulaSchedule
             await database.CreateTableAsync<ShiftDay>();
 
             await database.InsertAllAsync(jsonPath);
+        }
+
+
+        public async Task DeleteData()
+        {
+            var database = new SQLiteAsyncConnection(dbPath);
+            await database.DeleteAllAsync<ShiftDay>();
         }
     }
 }

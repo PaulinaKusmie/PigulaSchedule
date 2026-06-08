@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -30,9 +31,11 @@ namespace PigulaSchedule
 
             // 1. daty (06.05 format)
             var dates = Regex.Matches(text, @"\d{2}\.\d{2}")
-                .Select(m => m.Value)
+                .Select(m => DateTime.ParseExact(
+                    $"{m.Value}.{DateTime.Now.Year}",
+                    "dd.MM.yyyy",
+                    CultureInfo.InvariantCulture))
                 .ToList();
-
             // 2. dni tygodnia (ŚR CZ PI...)
             var days = Regex.Matches(text, @"\b(PO|WT|ŚR|CZ|CZW|PI|SO|NI)\b")
                 .Select(m => m.Value)
@@ -52,20 +55,12 @@ namespace PigulaSchedule
                 result.Add(new ShiftDay
                 {
                     Date = dates.ElementAtOrDefault(i),
-                    Day = days.ElementAtOrDefault(i),
+                    DayName = days.ElementAtOrDefault(i),
                     Shift = shifts.ElementAtOrDefault(i)
                 });
             }
 
             return result;
-        }
-        private static DateOnly ParseDate(string input)
-        {
-            var parts = input.Split('.');
-            return new DateOnly(
-                2025, // albo dynamiczny rok
-                int.Parse(parts[1]),
-                int.Parse(parts[0]));
         }
 
     }

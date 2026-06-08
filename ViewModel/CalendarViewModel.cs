@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PigulaSchedule.Model;
 using PigulaSchedule.Resources;
 using Plugin.Maui.Calendar.Models;
@@ -8,10 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XCalendar.Core.Models;
 
 namespace PigulaSchedule.ViewModel
 {
-    class CalendarViewModel : ObservableObject
+    public partial class CalendarViewModel : ObservableObject
     {
         private int month;
         public int Month
@@ -57,45 +59,101 @@ namespace PigulaSchedule.ViewModel
                 OnPropertyChanged();
             }
         }
+        public List<DateTime> EdDays { get; set; } = new List<DateTime>();
+        public List<DateTime> EnDays { get; set; } = new List<DateTime>();
+        public Calendar<WorkShift> MyCalendar { get; set; } = new Calendar<WorkShift>();
 
-        Color GetShiftColor(WorkShift shift)
-        {
-            return shift.ShiftType switch
-            {
-                "Morning" => Colors.Yellow,
-                "Night" => Colors.DarkBlue,
-            };
-        }
-
-        public EventCollection Events { get; set; } = new();
 
         string dbPath = Path.Combine(
             FileSystem.AppDataDirectory,
             "pigulaApp.db3");
 
-        public CalendarViewModel()
+        private SQLiteAsyncConnection database;
+
+        public  CalendarViewModel()
         {
+       
 
             Day = DateTime.Now.Day;
             Month = DateTime.Now.Month;
             Year = DateTime.Now.Year;
 
 
-            var database = new SQLiteAsyncConnection(dbPath);
+             database = new SQLiteAsyncConnection(dbPath);
             List<ShiftDay> persons =  database.Table<ShiftDay>().ToListAsync().Result;
 
-            foreach (var VARIABLE in persons)
-            {
-                var dd = VARIABLE.Date;
-            }
+            MyCalendar.DaysUpdated += OnDaysUpdated;
+            OnDaysUpdated(null, null);
 
-            Events.Add(DateTime.Today, new List<object>
-            {
-                new WorkShift { Title = "Zmiana poranna", Type = "Morning" },
-                new WorkShift { Title = "Zmiana nocna", Type = "Night" }
-            });
+            MyCalendar.NavigatedDate = MyCalendar.NavigatedDate.AddMonths(-1);
+
 
             Title = $"Twój {Utiliti.IntToNameMonth(DateTime.Now.Month)}";
+        }
+
+
+        private void OnDaysUpdated(object sender, EventArgs e)
+        {
+            List<ShiftDay> shifts = database.Table<ShiftDay>().ToListAsync().Result;
+            foreach (var day in MyCalendar.Days)
+            {
+                var shift = shifts.FirstOrDefault(s => s.Date.Date == day.DateTime.Date);
+
+                if (shift == null)
+                {
+                    day.ShiftColor = Colors.Transparent;
+                    day.IsSelected = false;
+                }
+                else if (shift.Shift == "ED")
+                {
+                    day.ShiftColor = Colors.Red;
+                    day.IsSelected = true;
+                }
+                else if (shift.Shift == "EN")
+                {
+                    day.ShiftColor = Colors.Blue;
+                    day.IsSelected = true;
+                }
+            }
+        }
+
+
+        [RelayCommand]
+        public async Task LeftAsync()
+        {
+            try
+            {
+                
+
+
+            }
+            catch (Exception ex)
+            {
+            
+            }
+            finally
+            {
+          
+            }
+        }
+
+        [RelayCommand]
+        public async Task RightAsync()
+        {
+            try
+            {
+                AddSchedule addSchedule = new AddSchedule();
+                await addSchedule.DeleteData();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+         
+            }
         }
     }
 }
