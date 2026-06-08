@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PigulaSchedule.Resources;
 
 
 namespace PigulaSchedule.ViewModels;
@@ -56,7 +57,7 @@ public partial class LoginViewModel : ObservableObject
     public LoginViewModel()
     {
             Day = DateTime.Now.Day.ToString();
-            MonthYear = $"{IntToNameMonth(DateTime.Now.Month)}   {DateTime.Now.Year}";
+            MonthYear = $"{Utiliti.IntToNameMonth(DateTime.Now.Month)}   {DateTime.Now.Year}";
     }
 
     [RelayCommand] 
@@ -101,13 +102,4 @@ public partial class LoginViewModel : ObservableObject
 
 
 
-    private string IntToNameMonth(int numberOfMonth)
-    {
-        return numberOfMonth >= 1 && numberOfMonth <= 12
-            ? CultureInfo.GetCultureInfo("pl-PL")
-                .DateTimeFormat
-                .GetMonthName(numberOfMonth)
-            : "Nieprawidłowy numer miesiąca";
-
-    }
 }

@@ -1,13 +1,26 @@
-
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PigulaSchedule.View.CalendarPage"
+             xmlns:controls="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar" 
              Title="Kalendarz">
     <VerticalStackLayout>
         <Label
-            Text="{Binding Month}"
+            Text="{Binding Title}"
             Style="{StaticResource Headline}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+
+        <controls:Calendar
+            Day="{Binding Day}"
+            Month="{Binding Month}"
+            Year="{Binding Year}"
+            VerticalOptions="Fill"
+            HorizontalOptions="Fill">
+            <DataTemplate>
+                <Frame BackgroundColor="{Binding ShiftType, Converter={StaticResource ShiftColorConverter}}">
+                    <Label Text="{Binding Title}" />
+                </Frame>
+            </DataTemplate>
+        </controls:Calendar>
     </VerticalStackLayout>
 </ContentPage>
