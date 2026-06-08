@@ -32,10 +32,22 @@
             
             />
 
+            <HorizontalStackLayout>
 
-            <Button
-                Command="{Binding ScanScheduleCommand}"
-                Text="Zaloguj się" />
+                <Button
+                    Command="{Binding OpenCalendarPageCommand}"
+                    Text="Otwórz kalendarz" HorizontalOptions="Start" />
+                
+
+                <Button
+                    Command="{Binding ScanScheduleCommand}"
+                    Text="Dodaj harmonogram" HorizontalOptions="End" />
+
+            </HorizontalStackLayout>
+
+       
+
+     
 
             <ActivityIndicator
                 IsRunning="{Binding IsBusy}"

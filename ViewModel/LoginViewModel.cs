@@ -1,6 +1,7 @@
-﻿using Android.Icu.Text;
+﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PigulaSchedule.View;
 using Plugin.Maui.OCR;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ public partial class LoginViewModel : ObservableObject
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
-    [ObservableProperty] private string ocrResult = string.Empty;
+
 
 
     public LoginViewModel()
@@ -63,34 +64,41 @@ public partial class LoginViewModel : ObservableObject
     {
         try
         {
-            var photo = await MediaPicker.Default.PickPhotoAsync();
-
-            if (photo == null)
-                return;
-
-            using var stream = await photo.OpenReadAsync();
-
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-
-            var result = await OcrPlugin.Default
-                .RecognizeTextAsync(ms.ToArray());
-
-            OcrResult = result.AllText;
-
-           var dupa =  ScheduleParser.Parse(OcrResult);
-
+            AddSchedule addSchedule = new AddSchedule();
+            await addSchedule.AddScheduleAsync();
 
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Błąd OCR: {ex.Message}";
+            ErrorMessage = $"Błąd dodawania harmonogramu: {ex.Message}";
         }
         finally
         {
             IsBusy = false;
         }
     }
+
+    [RelayCommand]
+    public async Task OpenCalendarPageAsync()
+    {
+        try
+        {
+
+            IsBusy = true;
+            await Shell.Current.GoToAsync(nameof(CalendarPage));
+
+
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error of OpenCalendarPage: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
 
 
     private string IntToNameMonth(int numberOfMonth)
