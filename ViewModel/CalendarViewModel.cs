@@ -59,6 +59,18 @@ namespace PigulaSchedule.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        private double daysViewHeightRequest;
+        public double DaysViewHeightRequest
+        {
+            get => daysViewHeightRequest;
+            set
+            {
+                daysViewHeightRequest = value;
+                OnPropertyChanged();
+            }
+        }
+        
         public List<DateTime> EdDays { get; set; } = new List<DateTime>();
         public List<DateTime> EnDays { get; set; } = new List<DateTime>();
         public Calendar<WorkShift> MyCalendar { get; set; } = new Calendar<WorkShift>();
@@ -78,9 +90,10 @@ namespace PigulaSchedule.ViewModel
             Month = DateTime.Now.Month;
             Year = DateTime.Now.Year;
 
+            //DaysViewHeightRequest = DeviceDisplay.MainDisplayInfo.Height
+            //                        / DeviceDisplay.MainDisplayInfo.Density;
 
-             database = new SQLiteAsyncConnection(dbPath);
-            List<ShiftDay> persons =  database.Table<ShiftDay>().ToListAsync().Result;
+            database = new SQLiteAsyncConnection(dbPath);
 
             MyCalendar.DaysUpdated += OnDaysUpdated;
             OnDaysUpdated(null, null);

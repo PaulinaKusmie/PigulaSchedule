@@ -11,42 +11,33 @@
             <resources:DayColorConverter x:Key="DayColorConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <VerticalStackLayout>
+
+    <Grid RowDefinitions="Auto,*">
         <Label
+            Grid.Row="0"
             Text="{Binding Title}"
             Style="{StaticResource Headline}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
-
-
-        <!--<HorizontalStackLayout Margin="20">
-
-
-            <Button
-                Command="{Binding LeftCommand}"
-                Text="<"VerticalOptions="End" />
-
-            <Button
-                Command="{Binding RightCommand}"
-                Text=">" VerticalOptions="End" />
-
-        </HorizontalStackLayout-->
-
         <xc:CalendarView
+            x:Name="CalendarViewControl"
+            Grid.Row="1"
             VerticalOptions="FillAndExpand"
             HorizontalOptions="FillAndExpand"
+          
             Days="{Binding MyCalendar.Days}"
             DaysOfWeek="{Binding MyCalendar.DayNamesOrder}"
             NavigatedDate="{Binding MyCalendar.NavigatedDate}">
-            <xc:CalendarView.DayTemplate      >
+            <xc:CalendarView.DayTemplate>
                 <DataTemplate x:DataType="local:WorkShift">
-                    <Grid>
+                    <Grid BackgroundColor="Transparent">
                         <BoxView
                             CornerRadius="30" 
                             Color="{Binding ShiftColor}"
-                            IsVisible="{Binding IsSelected}"/>
-
+                            IsVisible="{Binding IsSelected}"
+                            BackgroundColor="Transparent"
+                            Margin="2"/>
                         <xc:DayView
                             DateTime="{Binding DateTime}"
                             IsCurrentMonth="{Binding IsCurrentMonth}"
@@ -59,6 +50,5 @@
                 </DataTemplate>
             </xc:CalendarView.DayTemplate>
         </xc:CalendarView>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

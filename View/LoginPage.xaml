@@ -4,20 +4,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="{Binding LoginTitle}">
 
-    <ScrollView>
-        <VerticalStackLayout
+        <Grid RowDefinitions="*,10*,*,*,*,*"
             Padding="24"
-            Spacing="16"
             VerticalOptions="Center">
 
             <Label
+                Grid.Row="0"
                 FontSize="32"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Text="Witaj jest dziś " />
 
             <Label
-                FontSize="100"
+                Grid.Row="1"
+                FontSize="150"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Text="{Binding Day}"
@@ -25,6 +25,7 @@
                 />
 
             <Label
+                Grid.Row="2"
                 FontSize="25"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
@@ -32,36 +33,35 @@
             
             />
 
-            <HorizontalStackLayout>
+        <Grid ColumnDefinitions="*,*"  Grid.Row="3">
 
-                <Button
+                <Button Grid.Column="0"
                     Command="{Binding OpenCalendarPageCommand}"
                     Text="Otwórz kalendarz" HorizontalOptions="Start" />
                 
 
-                <Button
+                <Button Grid.Column="1"
                     Command="{Binding ScanScheduleCommand}"
                     Text="Dodaj harmonogram" HorizontalOptions="End" />
 
-                <Button
+                <!--<Button
                     Command="{Binding DeleteCommand}"
-                    Text="Usuń harmonogram" HorizontalOptions="End" />
+                    Text="Usuń harmonogram" HorizontalOptions="End" />-->
 
-            </HorizontalStackLayout>
+        </Grid>
 
-       
 
-     
 
-            <ActivityIndicator
-                IsRunning="{Binding IsBusy}"
-                IsVisible="{Binding IsBusy}" />
 
-            <Label
-                Text="{Binding ErrorMessage}"
-                TextColor="Red" />
+            <ActivityIndicator   Grid.Row="4"
+                                 IsRunning="{Binding IsBusy}"
+                                 IsVisible="{Binding IsBusy}" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+            <Label   Grid.Row="5"
+                     Text="{Binding ErrorMessage}"
+                     TextColor="Red" />
+
+        </Grid>
+
 
 </ContentPage>
