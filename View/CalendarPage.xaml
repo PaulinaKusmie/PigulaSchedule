@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,auto, *">
         <Label
             Grid.Row="0"
             Text="{Binding Title}"
@@ -20,24 +20,57 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
+        <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" Margin="8,4">
+
+            <Button Grid.Column="0"
+                    Text="&#8249;"
+                    FontSize="32"
+                    BackgroundColor="Transparent"
+                    TextColor="Black"
+                    Command="{Binding LeftCommand}"
+                    />
+
+            <Label Grid.Column="1"
+                   Text="{Binding NavigatedDate, 
+                      Source={x:Reference CalendarViewControl}, 
+                      StringFormat='{0:MMMM yyyy}'}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+
+            <Button Grid.Column="2"
+                    Text="&#8250;"
+                    FontSize="32"
+                    BackgroundColor="Transparent"
+                    TextColor="Black"
+                    Command="{Binding RightCommand}"
+                    />
+        </Grid>
+
+
         <xc:CalendarView
             x:Name="CalendarViewControl"
-            Grid.Row="1"
+            Grid.Row="2"
             VerticalOptions="FillAndExpand"
             HorizontalOptions="FillAndExpand"
-          
+            DaysViewHeightRequest="{Binding DaysViewHeightRequest}"    
             Days="{Binding MyCalendar.Days}"
             DaysOfWeek="{Binding MyCalendar.DayNamesOrder}"
-            NavigatedDate="{Binding MyCalendar.NavigatedDate}">
+            NavigatedDate="{Binding MyCalendar.NavigatedDate, Mode=TwoWay}">
             <xc:CalendarView.DayTemplate>
                 <DataTemplate x:DataType="local:WorkShift">
                     <Grid BackgroundColor="Transparent">
-                        <BoxView
-                            CornerRadius="30" 
-                            Color="{Binding ShiftColor}"
+
+                        
+                        <Ellipse
+                            Fill="{Binding ShiftColor}"
                             IsVisible="{Binding IsSelected}"
-                            BackgroundColor="Transparent"
-                            Margin="2"/>
+                            WidthRequest="36"
+                            HeightRequest="36"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+
                         <xc:DayView
                             DateTime="{Binding DateTime}"
                             IsCurrentMonth="{Binding IsCurrentMonth}"
@@ -46,6 +79,7 @@
                             IsInvalid="{Binding IsInvalid}"
                             BackgroundColor="Transparent"
                             AutoSetStyleBasedOnDayState="False" />
+                     
                     </Grid>
                 </DataTemplate>
             </xc:CalendarView.DayTemplate>

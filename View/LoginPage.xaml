@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="{Binding LoginTitle}">
 
-        <Grid RowDefinitions="*,10*,*,*,*,*"
+    <Grid RowDefinitions="auto,10*,auto,auto,auto,auto"
             Padding="24"
             VerticalOptions="Center">
 
@@ -12,17 +12,23 @@
                 Grid.Row="0"
                 FontSize="32"
                 FontAttributes="Bold"
+                VerticalOptions="Start"
                 HorizontalOptions="Center"
                 Text="Witaj jest dziś " />
 
-            <Label
-                Grid.Row="1"
-                FontSize="150"
-                FontAttributes="Bold"
-                HorizontalOptions="Center"
-                Text="{Binding Day}"
-                
-                />
+            <Grid  Grid.Row="1"  VerticalOptions="FillAndExpand"
+                   HorizontalOptions="FillAndExpand">
+                <Label
+                    Grid.Row="1"
+                    FontSize="300"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    FontFamily="Arial"
+                    Text="{Binding Day}"/>
+
+            </Grid>
+          
 
             <Label
                 Grid.Row="2"
@@ -33,31 +39,31 @@
             
             />
 
-        <Grid ColumnDefinitions="*,*"  Grid.Row="3">
+            <Grid ColumnDefinitions="*,*" Margin="20" Grid.Row="3">
 
-                <Button Grid.Column="0"
-                    Command="{Binding OpenCalendarPageCommand}"
-                    Text="Otwórz kalendarz" HorizontalOptions="Start" />
-                
-
-                <Button Grid.Column="1"
-                    Command="{Binding ScanScheduleCommand}"
-                    Text="Dodaj harmonogram" HorizontalOptions="End" />
-
-                <!--<Button
-                    Command="{Binding DeleteCommand}"
-                    Text="Usuń harmonogram" HorizontalOptions="End" />-->
-
-        </Grid>
+                    <Button Grid.Column="0"
+                        Command="{Binding OpenCalendarPageCommand}"
+                        Text="Otwórz kalendarz" HorizontalOptions="Start" />
 
 
+            <Button Grid.Column="1" Style="{StaticResource Button}"
+                        Command="{Binding ScanScheduleCommand}"
+                        Text="Dodaj harmonogram" HorizontalOptions="End" />
+
+                    <!--<Button
+                        Command="{Binding DeleteCommand}"
+                        Text="Usuń harmonogram" HorizontalOptions="End" />-->
+
+            </Grid>
 
 
-            <ActivityIndicator   Grid.Row="4"
+
+
+            <ActivityIndicator   Grid.Row="4" Margin="5"
                                  IsRunning="{Binding IsBusy}"
                                  IsVisible="{Binding IsBusy}" />
 
-            <Label   Grid.Row="5"
+                <Label   Grid.Row="5" Margin="5"
                      Text="{Binding ErrorMessage}"
                      TextColor="Red" />
 

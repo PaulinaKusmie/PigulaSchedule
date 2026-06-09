@@ -6,9 +6,11 @@ using Plugin.Maui.Calendar.Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using XCalendar.Core.Models;
 
 namespace PigulaSchedule.ViewModel
@@ -60,7 +62,7 @@ namespace PigulaSchedule.ViewModel
             }
         }
 
-        private double daysViewHeightRequest;
+        private double daysViewHeightRequest = 300 ;
         public double DaysViewHeightRequest
         {
             get => daysViewHeightRequest;
@@ -70,10 +72,18 @@ namespace PigulaSchedule.ViewModel
                 OnPropertyChanged();
             }
         }
-        
-        public List<DateTime> EdDays { get; set; } = new List<DateTime>();
-        public List<DateTime> EnDays { get; set; } = new List<DateTime>();
-        public Calendar<WorkShift> MyCalendar { get; set; } = new Calendar<WorkShift>();
+
+
+        private Calendar<WorkShift> _myCalendar = new Calendar<WorkShift>();
+        public Calendar<WorkShift> MyCalendar
+        {
+            get => _myCalendar;
+            set
+            {
+                _myCalendar = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         string dbPath = Path.Combine(
@@ -89,22 +99,22 @@ namespace PigulaSchedule.ViewModel
             Day = DateTime.Now.Day;
             Month = DateTime.Now.Month;
             Year = DateTime.Now.Year;
-
-            //DaysViewHeightRequest = DeviceDisplay.MainDisplayInfo.Height
-            //                        / DeviceDisplay.MainDisplayInfo.Density;
+            
 
             database = new SQLiteAsyncConnection(dbPath);
 
             MyCalendar.DaysUpdated += OnDaysUpdated;
             OnDaysUpdated(null, null);
 
+
+
             MyCalendar.NavigatedDate = MyCalendar.NavigatedDate.AddMonths(-1);
-
-
+            MyCalendar.NavigationLowerBound = DateTime.Today.AddYears(-2);
+            MyCalendar.NavigationUpperBound = DateTime.Today.AddYears(2);
             Title = $"Twój {Utiliti.IntToNameMonth(DateTime.Now.Month)}";
         }
 
-
+ 
         private void OnDaysUpdated(object sender, EventArgs e)
         {
             List<ShiftDay> shifts = database.Table<ShiftDay>().ToListAsync().Result;
@@ -136,8 +146,10 @@ namespace PigulaSchedule.ViewModel
         {
             try
             {
-                
 
+                MyCalendar.NavigatedDate = MyCalendar.NavigatedDate.AddMonths(-1);
+                Title = $"Twój {Utiliti.IntToNameMonth(MyCalendar.NavigatedDate.Month)}";
+                OnPropertyChanged(nameof(MyCalendar));
 
             }
             catch (Exception ex)
@@ -155,8 +167,13 @@ namespace PigulaSchedule.ViewModel
         {
             try
             {
-                AddSchedule addSchedule = new AddSchedule();
-                await addSchedule.DeleteData();
+                var target = MyCalendar.NavigatedDate.AddMonths(1);
+
+                MyCalendar.Navigate(
+                    target - MyCalendar.NavigatedDate);
+
+                Debug.WriteLine(
+                    $"Nowa data: {MyCalendar.NavigatedDate:yyyy-MM-dd}");
 
             }
             catch (Exception ex)
@@ -168,5 +185,9 @@ namespace PigulaSchedule.ViewModel
          
             }
         }
+
+     
+
+
     }
 }
