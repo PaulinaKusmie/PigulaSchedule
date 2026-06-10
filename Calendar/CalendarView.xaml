@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="PigulaSchedule.Calendar.CalendarView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:PigulaSchedule.Calendar">
+
+    <VerticalStackLayout Padding="8" Spacing="8">
+
+        <!-- Nawigacja miesięcy -->
+        <Grid ColumnDefinitions="40,*,40" HorizontalOptions="Fill">
+            <Button
+                Grid.Column="0"
+                Text="‹"
+                FontSize="20"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                Clicked="OnPrevMonth"
+                HeightRequest="40" WidthRequest="40"
+                CornerRadius="8"/>
+
+            <Label
+                Grid.Column="1"
+                x:Name="MonthYearLabel"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                FontSize="16"
+                FontAttributes="Bold"/>
+
+            <Button
+                Grid.Column="2"
+                Text="›"
+                FontSize="20"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                Clicked="OnNextMonth"
+                HeightRequest="40" WidthRequest="40"
+                CornerRadius="8"/>
+        </Grid>
+
+        <!-- Nagłówki dni tygodnia -->
+        <Grid x:Name="DayNamesGrid" ColumnSpacing="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+
+        <!-- Siatka dni -->
+        <Grid x:Name="DaysGrid" RowSpacing="4" ColumnSpacing="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+
+    </VerticalStackLayout>
+</ContentView>

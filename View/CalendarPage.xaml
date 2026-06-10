@@ -1,88 +1,26 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PigulaSchedule.View.CalendarPage"
-             xmlns:xc="clr-namespace:XCalendar.Maui.Views;assembly=XCalendar.Maui"
              xmlns:resources="clr-namespace:PigulaSchedule.Resources"
-             xmlns:xcStyles="clr-namespace:XCalendar.Maui.Styles;assembly=XCalendar.Maui"
+             xmlns:controls="clr-namespace:PigulaSchedule.Calendar"
              xmlns:local="clr-namespace:PigulaSchedule.Model"
              Title="Kalendarz">
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <resources:DayColorConverter x:Key="DayColorConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,auto, *">
-        <Label
-            Grid.Row="0"
-            Text="{Binding Title}"
-            Style="{StaticResource Headline}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+    <Grid RowDefinitions="*" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 
-        <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" Margin="8,4">
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="16">
 
-            <Button Grid.Column="0"
-                    Text="&#8249;"
-                    FontSize="32"
-                    BackgroundColor="Transparent"
-                    TextColor="Black"
-                    Command="{Binding LeftCommand}"
-                    />
-
-            <Label Grid.Column="1"
-                   Text="{Binding NavigatedDate, 
-                      Source={x:Reference CalendarViewControl}, 
-                      StringFormat='{0:MMMM yyyy}'}"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"/>
-
-            <Button Grid.Column="2"
-                    Text="&#8250;"
-                    FontSize="32"
-                    BackgroundColor="Transparent"
-                    TextColor="Black"
-                    Command="{Binding RightCommand}"
-                    />
-        </Grid>
+                <controls:CalendarView
+                    HighlightedDatesColor1="{Binding DatesColor1}"
+                    HighlightedDatesColor2="{Binding DatesColor2}"
+                    Color1="#378ADD"
+                    Color2="#D4537E"/>
 
 
-        <xc:CalendarView
-            x:Name="CalendarViewControl"
-            Grid.Row="2"
-            VerticalOptions="FillAndExpand"
-            HorizontalOptions="FillAndExpand"
-            DaysViewHeightRequest="{Binding DaysViewHeightRequest}"    
-            Days="{Binding MyCalendar.Days}"
-            DaysOfWeek="{Binding MyCalendar.DayNamesOrder}"
-            NavigatedDate="{Binding MyCalendar.NavigatedDate, Mode=TwoWay}">
-            <xc:CalendarView.DayTemplate>
-                <DataTemplate x:DataType="local:WorkShift">
-                    <Grid BackgroundColor="Transparent">
+            </VerticalStackLayout>
+        </ScrollView>
 
-                        
-                        <Ellipse
-                            Fill="{Binding ShiftColor}"
-                            IsVisible="{Binding IsSelected}"
-                            WidthRequest="36"
-                            HeightRequest="36"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"/>
 
-                        <xc:DayView
-                            DateTime="{Binding DateTime}"
-                            IsCurrentMonth="{Binding IsCurrentMonth}"
-                            IsToday="{Binding IsToday}"
-                            IsSelected="{Binding IsSelected}"
-                            IsInvalid="{Binding IsInvalid}"
-                            BackgroundColor="Transparent"
-                            AutoSetStyleBasedOnDayState="False" />
-                     
-                    </Grid>
-                </DataTemplate>
-            </xc:CalendarView.DayTemplate>
-        </xc:CalendarView>
     </Grid>
 </ContentPage>

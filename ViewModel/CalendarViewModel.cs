@@ -2,10 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using PigulaSchedule.Model;
 using PigulaSchedule.Resources;
-using Plugin.Maui.Calendar.Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -62,7 +62,7 @@ namespace PigulaSchedule.ViewModel
             }
         }
 
-        private double daysViewHeightRequest = 300 ;
+        private double daysViewHeightRequest = 500 ;
         public double DaysViewHeightRequest
         {
             get => daysViewHeightRequest;
@@ -74,17 +74,27 @@ namespace PigulaSchedule.ViewModel
         }
 
 
-        private Calendar<WorkShift> _myCalendar = new Calendar<WorkShift>();
-        public Calendar<WorkShift> MyCalendar
+        private ObservableCollection<DateTime> datesColor1 = new ObservableCollection<DateTime>();
+        public ObservableCollection<DateTime> DatesColor1
         {
-            get => _myCalendar;
+            get => datesColor1;
             set
             {
-                _myCalendar = value;
+                datesColor1 = value;
                 OnPropertyChanged();
             }
         }
 
+        private ObservableCollection<DateTime> datesColor2 = new ObservableCollection<DateTime>();
+        public ObservableCollection<DateTime> DatesColor2
+        {
+            get => datesColor2;
+            set
+            {
+                datesColor2 = value;
+                OnPropertyChanged();
+            }
+        }
 
         string dbPath = Path.Combine(
             FileSystem.AppDataDirectory,
@@ -103,14 +113,18 @@ namespace PigulaSchedule.ViewModel
 
             database = new SQLiteAsyncConnection(dbPath);
 
-            MyCalendar.DaysUpdated += OnDaysUpdated;
-            OnDaysUpdated(null, null);
+            List<ShiftDay> shifts = database.Table<ShiftDay>().ToListAsync().Result;
 
+            DatesColor1.Clear(); // czerwony = ED
+            DatesColor2.Clear(); // niebieski = EN
 
-
-            MyCalendar.NavigatedDate = MyCalendar.NavigatedDate.AddMonths(-1);
-            MyCalendar.NavigationLowerBound = DateTime.Today.AddYears(-2);
-            MyCalendar.NavigationUpperBound = DateTime.Today.AddYears(2);
+            foreach (var shift in shifts)
+            {
+                if (shift.Shift == "ED")
+                    DatesColor1.Add(shift.Date.Date);
+                else if (shift.Shift == "EN")
+                    DatesColor2.Add(shift.Date.Date);
+            }
             Title = $"Twój {Utiliti.IntToNameMonth(DateTime.Now.Month)}";
         }
 
@@ -118,75 +132,59 @@ namespace PigulaSchedule.ViewModel
         private void OnDaysUpdated(object sender, EventArgs e)
         {
             List<ShiftDay> shifts = database.Table<ShiftDay>().ToListAsync().Result;
-            foreach (var day in MyCalendar.Days)
-            {
-                var shift = shifts.FirstOrDefault(s => s.Date.Date == day.DateTime.Date);
 
-                if (shift == null)
-                {
-                    day.ShiftColor = Colors.Transparent;
-                    day.IsSelected = false;
-                }
-                else if (shift.Shift == "ED")
-                {
-                    day.ShiftColor = Colors.Red;
-                    day.IsSelected = true;
-                }
+            DatesColor1.Clear(); // czerwony = ED
+            DatesColor2.Clear(); // niebieski = EN
+
+            foreach (var shift in shifts)
+            {
+                if (shift.Shift == "ED")
+                    DatesColor1.Add(shift.Date.Date);
                 else if (shift.Shift == "EN")
-                {
-                    day.ShiftColor = Colors.Blue;
-                    day.IsSelected = true;
-                }
+                    DatesColor2.Add(shift.Date.Date);
             }
+            //foreach (var day in MyCalendar.Days)
+            //{
+            //    var shift = shifts.FirstOrDefault(s => s.Date.Date == day.DateTime.Date);
+
+            //    if (shift == null)
+            //    {
+            //        day.ShiftColor = Colors.Transparent;
+            //        day.IsSelected = false;
+            //    }
+            //    else if (shift.Shift == "ED")
+            //    {
+            //        day.ShiftColor = Colors.Red;
+            //        day.IsSelected = true;
+            //    }
+            //    else if (shift.Shift == "EN")
+            //    {
+            //        day.ShiftColor = Colors.Blue;
+            //        day.IsSelected = true;
+            //    }
+            //}
         }
 
 
+        // LeftAsync - tak samo jak Right
         [RelayCommand]
         public async Task LeftAsync()
         {
-            try
-            {
-
-                MyCalendar.NavigatedDate = MyCalendar.NavigatedDate.AddMonths(-1);
-                Title = $"Twój {Utiliti.IntToNameMonth(MyCalendar.NavigatedDate.Month)}";
-                OnPropertyChanged(nameof(MyCalendar));
-
-            }
-            catch (Exception ex)
-            {
-            
-            }
-            finally
-            {
-          
-            }
+            //var target = MyCalendar.NavigatedDate.AddMonths(-1);
+            //MyCalendar.Navigate(target - MyCalendar.NavigatedDate);
+            //OnPropertyChanged(nameof(MyCalendar));
+            //Title = $"Twój {Utiliti.IntToNameMonth(MyCalendar.NavigatedDate.Month)}";
         }
 
         [RelayCommand]
         public async Task RightAsync()
         {
-            try
-            {
-                var target = MyCalendar.NavigatedDate.AddMonths(1);
-
-                MyCalendar.Navigate(
-                    target - MyCalendar.NavigatedDate);
-
-                Debug.WriteLine(
-                    $"Nowa data: {MyCalendar.NavigatedDate:yyyy-MM-dd}");
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-         
-            }
+            //var target = MyCalendar.NavigatedDate.AddMonths(1);
+            //MyCalendar.Navigate(target - MyCalendar.NavigatedDate);
+            //OnPropertyChanged(nameof(MyCalendar));
+            //Title = $"Twój {Utiliti.IntToNameMonth(MyCalendar.NavigatedDate.Month)}";
         }
 
-     
 
 
     }

@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PigulaSchedule.View;
-using Plugin.Maui.OCR;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
