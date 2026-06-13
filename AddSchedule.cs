@@ -1,8 +1,8 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using PigulaSchedule.Model;
-using Plugin.Maui.OCR;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -12,14 +12,11 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
-#if ANDROID
-using Android.Graphics;
-#endif
 
 
 namespace PigulaSchedule
 {
-    class AddSchedule
+    public partial  class AddSchedule
     {
         private string ocrResult = string.Empty;
 
@@ -29,72 +26,88 @@ namespace PigulaSchedule
 
 
 
-        //public async Task AddScheduleAsync()
-        //{
-        //    var photo = await MediaPicker.Default.PickPhotoAsync();
-
-        //    if (photo == null)
-        //        return;
-
-        //    using var stream = await photo.OpenReadAsync();
-
-        //    using var ms = new MemoryStream();
-        //    await stream.CopyToAsync(ms);
-
-        //    var result = await OcrPlugin.Default
-        //        .RecognizeTextAsync(ms.ToArray());
-
-        //    ocrResult = result.AllText;
-
-        //    var resultSchedule = ScheduleParser.Parse(ocrResult);
-
-        //    await SaveData(resultSchedule);
-        //}
-
         public async Task AddScheduleAsync()
         {
             var photo = await MediaPicker.Default.PickPhotoAsync();
+
             if (photo == null)
                 return;
 
             using var stream = await photo.OpenReadAsync();
+
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
-            var imageBytes = ms.ToArray();
 
-#if ANDROID
-    imageBytes = ConvertToBlackAndWhite(imageBytes);
-#endif
-
-            var result = await OcrPlugin.Default.RecognizeTextAsync(imageBytes);
-            ocrResult = result.AllText;
+            ocrResult = await RecognizeWithGemini(ms.ToArray());
 
             var resultSchedule = ScheduleParser.Parse(ocrResult);
+
             await SaveData(resultSchedule);
         }
 
-#if ANDROID
-            private byte[] ConvertToBlackAndWhite(byte[] imageBytes)
+
+        private async Task<string> RecognizeWithGemini(byte[] imageBytes)
+        {
+            using var client = new HttpClient();
+            var base64 = Convert.ToBase64String(imageBytes);
+
+            var requestBody = new
             {
-                var originalBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
-                
-                var bwBitmap = Android.Graphics.Bitmap.CreateBitmap(
-                    originalBitmap!.Width, 
-                    originalBitmap.Height, 
-                    Android.Graphics.Bitmap.Config.Argb8888!);
-                
-                var canvas = new Android.Graphics.Canvas(bwBitmap!);
-                var paint = new Android.Graphics.Paint();
-                var colorMatrix = new ColorMatrix();
-                colorMatrix.SetSaturation(0);
-                paint.SetColorFilter(new ColorMatrixColorFilter(colorMatrix));
-                canvas.DrawBitmap(originalBitmap, 0, 0, paint);
-                
-                using var ms = new MemoryStream();
-                bwBitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Jpeg!, 100, ms);
-                return ms.ToArray();
-            }
-#endif
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new object[]
+                        {
+                            new
+                            {
+                                inline_data = new
+                                {
+                                    mime_type = "image/jpeg",
+                                    data = base64
+                                }
+                            },
+                            new
+                            {
+                                text = @"To jest grafik pracy na jeden miesiąc. 
+                                        W pierwszym wierszu są daty (np. 01.05, 02.05...).
+                                        W trzecim wierszu są zmiany: ED, EDn, EN, ENn, W lub puste pole.
+                                        Traktuj EDn tak samo jak ED, i ENn tak samo jak EN.
+                                        Dla każdej daty wypisz zmianę w formacie DATA|ZMIANA.
+                                        Jeśli pole jest puste wpisz DW.
+                                        Jeśli pole ma W wpisz W.
+                                        Wypisz TYLKO pary data|zmiana, bez żadnego dodatkowego tekstu.
+                                        Przykład:
+                                        01.05|ED
+                                        02.05|EN
+                                        03.05|DW
+                                        04.05|W"
+                            }
+                        }
+                    }
+                }
+            };
+
+            var json = System.Text.Json.JsonSerializer.Serialize(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var apiKey = Constans.APIKey;
+            var response = await client.PostAsync(
+                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}",
+                content);
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(responseJson);
+
+            return doc.RootElement
+                .GetProperty("candidates")[0]
+                .GetProperty("content")
+                .GetProperty("parts")[0]
+                .GetProperty("text")
+                .GetString() ?? "";
+        }
+
+
 
 
         private async System.Threading.Tasks.Task SaveData(List<ShiftDay> jsonPath)
@@ -116,24 +129,4 @@ namespace PigulaSchedule
             await database.DeleteAllAsync<ShiftDay>();
         }
     }
-
-
-//#if ANDROID
-//    public class MlKitSuccessListener<T> : Java.Lang.Object, IOnSuccessListener
-//        where T : Java.Lang.Object
-//    {
-//        private readonly Action<T> _action;
-//        public MlKitSuccessListener(Action<T> action) => _action = action;
-//        public void OnSuccess(Java.Lang.Object result) => _action((T)result);
-//    }
-
-//    public class MlKitFailureListener : Java.Lang.Object, IOnFailureListener
-//    {
-//        private readonly Action<Java.Lang.Exception> _action;
-//        public MlKitFailureListener(Action<Java.Lang.Exception> action) => _action = action;
-//        public void OnFailure(Java.Lang.Exception e) => _action(e);
-//    }
-//#endif
-
-
 }

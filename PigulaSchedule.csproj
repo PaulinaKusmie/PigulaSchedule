@@ -19,7 +19,8 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
+		<AndroidDexTool>d8</AndroidDexTool>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 		<!-- Display name -->
 		<ApplicationTitle>PigulaSchedule</ApplicationTitle>
 
@@ -46,7 +47,7 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#FFFFFF" BaseSize="1024,1024" />
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
@@ -62,11 +63,9 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.9" />
 		<PackageReference Include="Microsoft.VisualStudio.Utilities" Version="17.14.40264" />
-		<PackageReference Include="Plugin.Maui.OCR" Version="1.1.1" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="XCalendar.Maui" Version="4.5.2" />
 	</ItemGroup>
-
 	<ItemGroup>
 	  <Compile Update="View\CalendarPage.xaml.cs">
 	    <DependentUpon>CalendarPage.xaml</DependentUpon>

@@ -8,7 +8,6 @@ namespace PigulaSchedule
         {
             InitializeComponent();
             MainPage = new AppShell();
-           // MainPage = new NavigationPage(new LoginPage());
         }
 
 

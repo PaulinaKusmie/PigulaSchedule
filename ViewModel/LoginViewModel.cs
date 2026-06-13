@@ -1,14 +1,15 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PigulaSchedule.Resources;
 using PigulaSchedule.View;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using PigulaSchedule.Resources;
 
 
 namespace PigulaSchedule.ViewModels;
@@ -52,14 +53,14 @@ public partial class LoginViewModel : ObservableObject
 
 
 
-
     public LoginViewModel()
     {
-            Day = DateTime.Now.Day.ToString();
+
+        Day = DateTime.Now.Day.ToString();
             MonthYear = $"{Utiliti.IntToNameMonth(DateTime.Now.Month)}   {DateTime.Now.Year}";
     }
 
-    [RelayCommand] 
+    [RelayCommand]
     public async Task ScanScheduleAsync()
     {
         try
@@ -77,6 +78,9 @@ public partial class LoginViewModel : ObservableObject
             IsBusy = false;
         }
     }
+
+
+
 
     [RelayCommand]
     public async Task OpenCalendarPageAsync()
@@ -102,6 +106,8 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     public async Task DeleteAsync()
     {
+
+
         try
         {
             AddSchedule addSchedule = new AddSchedule();

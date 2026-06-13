@@ -26,6 +26,16 @@ public partial class CalendarView : ContentView
             defaultValue: null,
             propertyChanged: OnDatesChanged);
 
+
+
+    public static readonly BindableProperty HighlightedDatesColor3Property =
+        BindableProperty.Create(
+            nameof(HighlightedDatesColor3),
+            typeof(ObservableCollection<DateTime>),
+            typeof(CalendarView),
+            defaultValue: null,
+            propertyChanged: OnDatesChanged);
+
     public static readonly BindableProperty Color1Property =
         BindableProperty.Create(
             nameof(Color1),
@@ -37,6 +47,14 @@ public partial class CalendarView : ContentView
     public static readonly BindableProperty Color2Property =
         BindableProperty.Create(
             nameof(Color2),
+            typeof(Color),
+            typeof(CalendarView),
+            defaultValue: Color.FromArgb("#D4537E"),
+            propertyChanged: (b, o, n) => ((CalendarView)b).BuildCalendar());
+
+    public static readonly BindableProperty Color3Property =
+        BindableProperty.Create(
+            nameof(Color3),
             typeof(Color),
             typeof(CalendarView),
             defaultValue: Color.FromArgb("#D4537E"),
@@ -54,6 +72,13 @@ public partial class CalendarView : ContentView
         set => SetValue(HighlightedDatesColor2Property, value);
     }
 
+    public ObservableCollection<DateTime> HighlightedDatesColor3
+    {
+        get => (ObservableCollection<DateTime>)GetValue(HighlightedDatesColor3Property);
+        set => SetValue(HighlightedDatesColor3Property, value);
+    }
+
+
     public Color Color1
     {
         get => (Color)GetValue(Color1Property);
@@ -64,6 +89,12 @@ public partial class CalendarView : ContentView
     {
         get => (Color)GetValue(Color2Property);
         set => SetValue(Color2Property, value);
+    }
+
+    public Color Color3
+    {
+        get => (Color)GetValue(Color3Property);
+        set => SetValue(Color3Property, value);
     }
 
     // ──────────────────────────────────────────────
@@ -164,6 +195,7 @@ public partial class CalendarView : ContentView
 
         var dates1 = HighlightedDatesColor1?.Select(d => d.Date).ToHashSet() ?? new HashSet<DateTime>();
         var dates2 = HighlightedDatesColor2?.Select(d => d.Date).ToHashSet() ?? new HashSet<DateTime>();
+        var dates3 = HighlightedDatesColor3?.Select(d => d.Date).ToHashSet() ?? new HashSet<DateTime>();
 
         var firstDay = new DateTime(_currentYear, _currentMonth, 1);
         int daysInMonth = DateTime.DaysInMonth(_currentYear, _currentMonth);
@@ -197,6 +229,7 @@ public partial class CalendarView : ContentView
             var date = new DateTime(_currentYear, _currentMonth, dayNumber);
             bool isColor1 = dates1.Contains(date.Date);
             bool isColor2 = dates2.Contains(date.Date);
+            bool isColor3 = dates3.Contains(date.Date);
             bool isToday = date.Date == today;
 
             Color bgColor = Colors.Transparent;
@@ -205,6 +238,7 @@ public partial class CalendarView : ContentView
 
             if (isColor1) { bgColor = Color1; textColor = Colors.White; }
             else if (isColor2) { bgColor = Color2; textColor = Colors.White; }
+            else if (isColor3) { bgColor = Color3; textColor = Colors.White; }
 
             var frame = new Border
             {

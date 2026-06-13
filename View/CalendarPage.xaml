@@ -14,8 +14,11 @@
                 <controls:CalendarView
                     HighlightedDatesColor1="{Binding DatesColor1}"
                     HighlightedDatesColor2="{Binding DatesColor2}"
-                    Color1="#378ADD"
-                    Color2="#D4537E"/>
+                    HighlightedDatesColor3="{Binding DatesColor3}"
+                    Color2="MidnightBlue"
+                    Color1= "BurlyWood"
+                    Color3="DarkOliveGreen"/>
+
 
 
             </VerticalStackLayout>

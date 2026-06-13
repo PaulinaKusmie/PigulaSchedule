@@ -14,7 +14,7 @@ public class CalendarViewModel : INotifyPropertyChanged
 
     private ObservableCollection<DateTime> _datesColor1 = new();
     private ObservableCollection<DateTime> _datesColor2 = new();
-
+    private ObservableCollection<DateTime> _datesColor3 = new();
     public ObservableCollection<DateTime> DatesColor1
     {
         get => _datesColor1;
@@ -25,6 +25,12 @@ public class CalendarViewModel : INotifyPropertyChanged
     {
         get => _datesColor2;
         set { _datesColor2 = value; OnPropertyChanged(); }
+    }
+
+    public ObservableCollection<DateTime> DatesColor3
+    {
+        get => _datesColor3;
+        set { _datesColor3 = value; OnPropertyChanged(); }
     }
 
     // ──────────────────────────────────────────────
@@ -67,10 +73,14 @@ public class CalendarViewModel : INotifyPropertyChanged
 
         DatesColor1 = new ObservableCollection<DateTime>(c1);
         DatesColor2 = new ObservableCollection<DateTime>(c2);
+        DatesColor3 = new ObservableCollection<DateTime>(all
+            .Where(e => e.ColorIndex == 3)
+            .Select(e => e.Date)
+            .OrderBy(d => d));
     }
 
     /// <summary>
-    /// Dodaje datę do wybranego koloru (1 lub 2).
+    /// Dodaje datę do wybranego koloru (1, 2 lub 3).
     /// Jeśli data już istnieje w którymkolwiek kolorze — najpierw ją usuwa.
     /// </summary>
     public async Task MarkDateAsync(DateTime date, int colorIndex)
@@ -105,6 +115,9 @@ public class CalendarViewModel : INotifyPropertyChanged
 
         var inC2 = DatesColor2.FirstOrDefault(d => d.Date == normalized);
         if (inC2 != default) DatesColor2.Remove(inC2);
+
+        var inC3 = DatesColor3.FirstOrDefault(d => d.Date == normalized);
+        if (inC3 != default) DatesColor3.Remove(inC3);
     }
 
     /// <summary>
