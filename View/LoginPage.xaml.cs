@@ -10,11 +10,11 @@ namespace PigulaSchedule.View
 {
     public partial class LoginPage : ContentPage
     {
-        public LoginPage()
+        public LoginPage(LoginViewModel vm )
         {
           
             InitializeComponent();
-            BindingContext = new LoginViewModel();
+            BindingContext = vm;
         }
 
     }

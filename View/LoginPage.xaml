@@ -2,55 +2,46 @@
     x:Class="PigulaSchedule.View.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="{Binding LoginTitle}">
+    Title="{Binding LoginTitle}" >
 
-    <Grid RowDefinitions="auto,10*,auto,auto,auto,auto"
-            Padding="24"
-            VerticalOptions="Center">
-
-            <Label
-                Grid.Row="0"
-                FontSize="32"
-                FontAttributes="Bold"
-                VerticalOptions="Start"
-                HorizontalOptions="Center"
-                Text="Witaj jest dziś " />
-
-            <Grid  Grid.Row="1"  VerticalOptions="FillAndExpand"
-                   HorizontalOptions="FillAndExpand">
-                <Label
-                    Grid.Row="1"
-                    FontSize="300"
-                    FontAttributes="Bold"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    FontFamily="Arial"
-                    Text="{Binding Day}"/>
-
-            </Grid>
-          
-
-            <Label
-                Grid.Row="2"
-                FontSize="25"
-                FontAttributes="Bold"
-                HorizontalOptions="Center"
-                Text="{Binding MonthYear}" 
+    <Grid RowDefinitions="3*,9*,*,*">
+        <Image Source="pigula.png"
+               Aspect="AspectFill"
+               Grid.RowSpan="4" />
+        <Label
+            Grid.Row="0"
+            Margin="0,30,0,0"
+            FontSize="19"
+            FontAttributes="Bold"
+            FontFamily="Arial"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            HorizontalTextAlignment="Center"
+            LineBreakMode="WordWrap">
+                <Label.FormattedText>
+                    <FormattedString>
+                    <Span Text="{Binding HelloText}"
+                              FontAttributes="Bold" />
+                        <Span Text="{Binding NextShift}"
+                              TextColor="MediumPurple"
+                              FontAttributes="Bold" />
+                    </FormattedString>
+                </Label.FormattedText>
             
-            />
+        </Label>
 
-        <Grid ColumnDefinitions="*,*,*" Margin="20" Grid.Row="3">
+        <Grid ColumnDefinitions="*,*,*"  Margin="2,0,0,10" Grid.Row="2">
 
-            <Button Grid.Column="0"
+            <Button Grid.Column="0" Margin="5" 
                         Command="{Binding OpenCalendarPageCommand}"
                         Text="Otwórz kalendarz" HorizontalOptions="Start" />
 
 
-            <Button Grid.Column="1" Style="{StaticResource Button}"
+            <Button Grid.Column="1" Margin="5"   Style="{StaticResource Button}"
                         Command="{Binding ScanScheduleCommand}"
                         Text="Dodaj harmonogram" HorizontalOptions="End" />
 
-            <Button Grid.Column="2"
+            <Button Grid.Column="2" Margin="5" 
                         Command="{Binding DeleteCommand}"
                         Text="Usuń harmonogram" HorizontalOptions="End" />
 
@@ -59,11 +50,11 @@
 
 
 
-        <ActivityIndicator   Grid.Row="4" Margin="5"
+        <ActivityIndicator   Grid.Row="2" Margin="3" BackgroundColor="BurlyWood"
                                  IsRunning="{Binding IsBusy}"
                                  IsVisible="{Binding IsBusy}" />
 
-                <Label   Grid.Row="5" Margin="5"
+        <Label   Grid.Row="3" Margin="5"
                      Text="{Binding ErrorMessage}"
                      TextColor="Red" />
 

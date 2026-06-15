@@ -267,4 +267,5 @@ public partial class CalendarView : ContentView
             DaysGrid.Children.Add(frame);
         }
     }
+
 }

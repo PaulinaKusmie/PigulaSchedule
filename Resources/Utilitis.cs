@@ -19,5 +19,8 @@ namespace PigulaSchedule.Resources
                 : "Nieprawidłowy numer miesiąca";
 
         }
+
+
+
     }
 }

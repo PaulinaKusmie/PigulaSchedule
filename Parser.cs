@@ -14,7 +14,7 @@ namespace PigulaSchedule
     public static class ScheduleParser
     {
 
-        public static List<ShiftDay> Parse(string text)
+        public static async Task<List<ShiftDay>> ParseAsync(string text)
         {
             var result = new List<ShiftDay>();
 
@@ -50,7 +50,7 @@ namespace PigulaSchedule
                 {
                     Date = date,
                     Shift = shift,
-                    DayName = date.ToString("ddd", new CultureInfo("pl-PL"))
+                    DayName = date.ToString("dddd", new CultureInfo("pl-PL"))
                 });
             }
 

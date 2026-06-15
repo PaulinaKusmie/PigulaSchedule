@@ -16,10 +16,12 @@ namespace PigulaSchedule
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                }); 
-
+                });
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<AddSchedule>();
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
             return builder.Build();
         }

@@ -25,39 +25,61 @@ public partial class LoginViewModel : ObservableObject
     [ObservableProperty]
     private bool isBusy;
 
-    private string day;
+    private string helloText;
 
-    public string Day
+    public string HelloText
     {
-        get => day;
+        get => helloText;
         set
         {
-            day = value;
+            helloText = value;
+            OnPropertyChanged();
+        }
+
+    }
+
+
+    private string nextShift;
+
+    public string NextShift
+    {
+        get => nextShift;
+        set
+        {
+            nextShift = value;
             OnPropertyChanged();
         }
     }
 
-    private string monthYear;
-    public string MonthYear
+
+    private AddSchedule addSchedule;
+    public AddSchedule AddSchedule
     {
-        get => monthYear;
+        get => addSchedule;
         set
         {
-            monthYear = value;
+            addSchedule = value;
             OnPropertyChanged();
         }
     }
+
 
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
 
 
-    public LoginViewModel()
+    public LoginViewModel(AddSchedule addSchedule) 
     {
+        AddSchedule = addSchedule;
+        LoadDataAsync();
 
-        Day = DateTime.Now.Day.ToString();
-            MonthYear = $"{Utiliti.IntToNameMonth(DateTime.Now.Month)}   {DateTime.Now.Year}";
+    }
+
+    public async Task LoadDataAsync()
+    {
+        HelloText = $"Witaj! Dziś jest {DateTime.Now.Day} {Utiliti.IntToNameMonth(DateTime.Now.Month)} {DateTime.Now.Year}\n";
+        NextShift  = $"Następna zmiana {await AddSchedule.LookForNextShift()}";
     }
 
     [RelayCommand]
@@ -65,7 +87,6 @@ public partial class LoginViewModel : ObservableObject
     {
         try
         {
-            AddSchedule addSchedule = new AddSchedule();
             await addSchedule.AddScheduleAsync();
 
         }
@@ -106,11 +127,8 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     public async Task DeleteAsync()
     {
-
-
         try
         {
-            AddSchedule addSchedule = new AddSchedule();
             await addSchedule.DeleteData();
 
         }

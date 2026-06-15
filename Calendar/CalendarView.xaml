@@ -17,6 +17,8 @@
                 TextColor="{AppThemeBinding Light=Black, Dark=White}"
                 Clicked="OnPrevMonth"
                 HeightRequest="40" WidthRequest="40"
+                 BorderColor="Black"
+                BorderWidth="1"
                 CornerRadius="8"/>
 
             <Label
@@ -35,6 +37,8 @@
                 TextColor="{AppThemeBinding Light=Black, Dark=White}"
                 Clicked="OnNextMonth"
                 HeightRequest="40" WidthRequest="40"
+                BorderColor="Black"
+                BorderWidth="1"
                 CornerRadius="8"/>
         </Grid>
 
@@ -53,6 +57,15 @@
 
         <!-- Siatka dni -->
         <Grid x:Name="DaysGrid" RowSpacing="4" ColumnSpacing="4">
+            <Grid.GestureRecognizers>
+                <SwipeGestureRecognizer
+            Direction="Left"
+            Swiped="OnNextMonth" />
+
+                <SwipeGestureRecognizer
+            Direction="Right"
+            Swiped="OnPrevMonth" />
+            </Grid.GestureRecognizers>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

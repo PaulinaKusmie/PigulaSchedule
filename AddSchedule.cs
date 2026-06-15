@@ -28,7 +28,7 @@ namespace PigulaSchedule
 
         public async Task AddScheduleAsync()
         {
-            var photo = await MediaPicker.Default.PickPhotoAsync();
+            var photo = await MediaPicker.Default.CapturePhotoAsync();
 
             if (photo == null)
                 return;
@@ -40,11 +40,36 @@ namespace PigulaSchedule
 
             ocrResult = await RecognizeWithGemini(ms.ToArray());
 
-            var resultSchedule = ScheduleParser.Parse(ocrResult);
-
-            await SaveData(resultSchedule);
+            var resultSchedule = await ScheduleParser.ParseAsync(ocrResult);
+            if(await IsCorrect(resultSchedule))
+            {
+                await SaveData(resultSchedule);
+            }
         }
 
+
+        private async Task<bool> IsCorrect(List<ShiftDay> shifts)
+        {
+            var edDays = shifts
+                .Where(x => x.Shift == "ED")
+                .Select(x => x.Date.ToString("dd.MM"));
+            var enDays = shifts
+                .Where(x => x.Shift == "EN")
+                .Select(x => x.Date.ToString("dd.MM"));
+            var uDays = shifts
+                .Where(x => x.Shift == "U")
+                .Select(x => x.Date.ToString("dd.MM"));
+            string message =
+                $"ED: {string.Join(", ", edDays)}\n\n" +
+                $"EN: {string.Join(", ", enDays)}\n\n" +
+                $"U: {string.Join(", ", uDays)}\n\n" +
+                "Czy zaimportować ten harmonogram?";
+            return await Microsoft.Maui.Controls.Application.Current!.MainPage!.DisplayAlert(
+                "Import harmonogramu",
+                message,
+                "Tak",
+                "Nie");
+        }
 
         private async Task<string> RecognizeWithGemini(byte[] imageBytes)
         {
@@ -107,15 +132,61 @@ namespace PigulaSchedule
                 .GetString() ?? "";
         }
 
+        public async Task<string> LookForNextShift()
+        {
+            var database = new SQLiteAsyncConnection(dbPath);
+            var today = DateTime.Today;
+
+            ShiftDay result = await database.FindWithQueryAsync<ShiftDay>(
+                "SELECT * FROM ShiftDay WHERE Date >= ? AND (Shift = 'ED' OR Shift = 'EN') ORDER BY Date ASC LIMIT 1", today);
+
+            if (result != null)
+            {
+                return  $" {result.DayName} {ShiftParser(result)}";
+            }
+            return null;
+        }
 
 
+        public string ShiftParser(ShiftDay shiftDay)
+        {
+            switch (shiftDay.Shift)
+            {
+                case "ED":
+                    return "zmiana dzienna";
+                case "EDn":
+                    return "zmiana dzienna neurochirurgiczna";
+                case "EN":
+                    return "zmiana nocna";
+                case "ENn":
+                    return "zmiana nocna neurochirurgiczna";
+                case "W":
+                    return "urlop";
+                default:
+                    return "dzień wolny";
+            }
+        }
 
-        private async System.Threading.Tasks.Task SaveData(List<ShiftDay> jsonPath)
+        public async Task<string> LookForTodayShift()
+        {
+            var database = new SQLiteAsyncConnection(dbPath);
+            var today = DateTime.Today;
+
+            ShiftDay result = await database.FindWithQueryAsync<ShiftDay>(
+                "SELECT * FROM ShiftDay WHERE Date >= ? ORDER BY Date ASC LIMIT 1", today);
+
+            if (result != null)
+            {
+                return ShiftParser(result);
+            }
+             return null;
+        }
+
+
+        private async Task SaveData(List<ShiftDay> jsonPath)
         {
             var database = new SQLiteAsyncConnection(dbPath);
 
-            if (jsonPath == null)
-                return;
 
             await database.CreateTableAsync<ShiftDay>();
 
@@ -123,10 +194,42 @@ namespace PigulaSchedule
         }
 
 
-        public async System.Threading.Tasks.Task DeleteData()
+
+        public async Task DeleteData()
+        {
+            string action = await Shell.Current.DisplayActionSheet(
+                "Który miesiąc chcesz usunąć?",
+                "Anuluj",
+                null,
+                "Bieżący miesiąc",
+                "Poprzedni miesiąc", "Następny miesiąc");
+
+            switch (action)
+            {
+                case "Bieżący miesiąc":
+                    await DeleteMonth(DateTime.Today);
+                    break;
+                case "Poprzedni miesiąc":
+                    await DeleteMonth(DateTime.Today.AddMonths(-1));
+                    break;
+                case "Następny miesiąc":
+                    await DeleteMonth(DateTime.Today.AddMonths(1));
+                    break;
+            }
+
+        }
+
+        private async Task DeleteMonth(DateTime month)
         {
             var database = new SQLiteAsyncConnection(dbPath);
-            await database.DeleteAllAsync<ShiftDay>();
+
+            var firstDay = new DateTime(month.Year, month.Month, 1).Ticks;
+            var lastDay = new DateTime(month.Year, month.Month,
+                DateTime.DaysInMonth(month.Year, month.Month), 23, 59, 59).Ticks;
+
+            await database.ExecuteAsync(
+                "DELETE FROM ShiftDay WHERE Date >= ? AND Date <= ?",
+                firstDay, lastDay);
         }
     }
 }

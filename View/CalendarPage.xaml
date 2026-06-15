@@ -6,23 +6,31 @@
              xmlns:local="clr-namespace:PigulaSchedule.Model"
              Title="Kalendarz">
 
-    <Grid RowDefinitions="*" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+    <Grid RowDefinitions="*,*" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
 
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="16" Spacing="16">
+        <VerticalStackLayout Grid.Row="0" Padding="16" Spacing="16">
 
-                <controls:CalendarView
-                    HighlightedDatesColor1="{Binding DatesColor1}"
-                    HighlightedDatesColor2="{Binding DatesColor2}"
-                    HighlightedDatesColor3="{Binding DatesColor3}"
-                    Color2="MidnightBlue"
-                    Color1= "BurlyWood"
-                    Color3="DarkOliveGreen"/>
-
+            <controls:CalendarView
+                HighlightedDatesColor1="{Binding DatesColor1}"
+                HighlightedDatesColor2="{Binding DatesColor2}"
+                HighlightedDatesColor3="{Binding DatesColor3}"
+                Color2="MidnightBlue"
+                Color1= "BurlyWood"
+                Color3="DarkOliveGreen"/>
 
 
-            </VerticalStackLayout>
-        </ScrollView>
+
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" Height="20" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*"
+              VerticalOptions="Start" HorizontalOptions="FillAndExpand">
+            <Label Grid.Column="0" Grid.Row="0" Text=" " BackgroundColor="BurlyWood"/>
+            <Label Grid.Column="1" Grid.Row="0" Text=" Dzien"/>
+            <Label Grid.Column="0" Grid.Row="2" Text=" " BackgroundColor="MidnightBlue" />
+            <Label Grid.Column="1" Grid.Row="2" Text="  Noc"/>
+            <Label Grid.Column="0" Grid.Row="1" BackgroundColor="DarkOliveGreen" Text=" "/>
+            <Label Grid.Column="1" Grid.Row="1" Text="  Urlop"/>
+        </Grid>
 
 
     </Grid>

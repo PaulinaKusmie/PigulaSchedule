@@ -62,7 +62,7 @@ namespace PigulaSchedule.ViewModel
             }
         }
 
-        private double daysViewHeightRequest = 500 ;
+        private double daysViewHeightRequest = 500;
         public double DaysViewHeightRequest
         {
             get => daysViewHeightRequest;
@@ -113,22 +113,45 @@ namespace PigulaSchedule.ViewModel
 
         private SQLiteAsyncConnection database;
 
-        public  CalendarViewModel()
+        public CalendarViewModel()
         {
-       
+
 
             Day = DateTime.Now.Day;
             Month = DateTime.Now.Month;
             Year = DateTime.Now.Year;
-            
+
 
             database = new SQLiteAsyncConnection(dbPath);
+            LoadData();
 
-            List<ShiftDay> shifts = database.Table<ShiftDay>().ToListAsync().Result;
+            //List<ShiftDay> shifts = database.Table<ShiftDay>().ToListAsync().Result;
+            //if (shifts.Count == 0) throw new Exception("Dodaj jakikolwiek harmonogram");
 
-            DatesColor1.Clear(); // czerwony = ED
-            DatesColor2.Clear();
-            DatesColor3.Clear(); /// niebieski = EN`
+            //DatesColor1.Clear(); // czerwony = ED
+            //DatesColor2.Clear();
+            //DatesColor3.Clear(); /// niebieski = EN`
+
+            //foreach (var shift in shifts)
+            //{
+            //    if (shift.Shift == "ED")
+            //        DatesColor1.Add(shift.Date.Date);
+            //    else if (shift.Shift == "EN")
+            //        DatesColor2.Add(shift.Date.Date);
+            //    else if (shift.Shift == "W")
+            //        DatesColor3.Add(shift.Date.Date);
+            //}
+        }
+
+        public async Task LoadData()
+        {
+            List<ShiftDay> shifts = await database.Table<ShiftDay>().ToListAsync();
+
+            if (shifts.Count == 0)
+            {
+                Debug.WriteLine("Brak danych w tabeli ShiftDay. Dodaj jakikolwiek harmonogram.");
+                return;
+            }
 
             foreach (var shift in shifts)
             {
@@ -139,11 +162,7 @@ namespace PigulaSchedule.ViewModel
                 else if (shift.Shift == "W")
                     DatesColor3.Add(shift.Date.Date);
             }
-            Title = $"Twój {Utiliti.IntToNameMonth(DateTime.Now.Month)}";
+
         }
-
- 
-        
-
     }
 }
