@@ -40,3 +40,10 @@ Aplikacja przechowuje dane lokalnie na urządzeniu użytkownika. Nie wymaga logo
 ## Autor
 
 Aplikacja stworzona w celu uproszczenia zarządzania grafikami pracy personelu pielęgniarskiego i eliminacji papierowych harmonogramów.
+
+
+<img width="500" height="1200" alt="Screenshot_1781764511" src="https://github.com/user-attachments/assets/55ba8fef-e53b-4741-ad92-c31226d66523" />
+
+
+<img width="500" height="1200" alt="Screenshot_1781764522" src="https://github.com/user-attachments/assets/fae11314-3e62-4ca6-82e7-1276008b0b5e" />
+
