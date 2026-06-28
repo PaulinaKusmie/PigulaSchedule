@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace PigulaSchedule.ViewModels;
 
-public partial class LoginViewModel : ObservableObject
+public partial class MainViewModel : ObservableObject
 {
     [ObservableProperty]
     private string email = string.Empty;
@@ -69,7 +69,7 @@ public partial class LoginViewModel : ObservableObject
 
 
 
-    public LoginViewModel(AddSchedule addSchedule) 
+    public MainViewModel(AddSchedule addSchedule) 
     {
         AddSchedule = addSchedule;
         LoadDataAsync();
@@ -78,8 +78,12 @@ public partial class LoginViewModel : ObservableObject
 
     public async Task LoadDataAsync()
     {
+        string nextShift = await AddSchedule.LookForNextShift();
+
         HelloText = $"Witaj! Dziś jest {DateTime.Now.Day} {Utiliti.IntToNameMonth(DateTime.Now.Month)} {DateTime.Now.Year}\n";
-        NextShift  = $"Następna zmiana {await AddSchedule.LookForNextShift()}";
+        if(!string.IsNullOrEmpty(nextShift)) NextShift = $"Następna zmiana {nextShift}";
+
+
     }
 
     [RelayCommand]

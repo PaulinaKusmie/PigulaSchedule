@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PigulaSchedule.Model;
 using PigulaSchedule.Resources;
@@ -62,6 +63,52 @@ namespace PigulaSchedule.ViewModel
             }
         }
 
+
+        private string dayText;
+        public string DayText
+        {
+            get => dayText;
+            set
+            {
+                dayText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string nigthText;
+
+        public string NigthText
+        {
+            get => nigthText;
+            set
+            {
+                nigthText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string dayOffText;
+        public string DayOffText
+        {
+            get => dayOffText;
+            set
+            {
+                dayOffText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string shortDayText;
+        public string ShortDayText
+        {
+            get => shortDayText;
+            set
+            {
+                shortDayText = value;
+                OnPropertyChanged();
+            }
+        }
+
         private double daysViewHeightRequest = 500;
         public double DaysViewHeightRequest
         {
@@ -107,6 +154,18 @@ namespace PigulaSchedule.ViewModel
             }
         }
 
+
+        private ObservableCollection<DateTime> datesColor4 = new ObservableCollection<DateTime>();
+        public ObservableCollection<DateTime> DatesColor4
+        {
+            get => datesColor4  ;
+            set
+            {
+                datesColor4 = value;
+                OnPropertyChanged();
+            }
+        }
+
         string dbPath = Path.Combine(
             FileSystem.AppDataDirectory,
             "pigulaApp.db3");
@@ -120,29 +179,18 @@ namespace PigulaSchedule.ViewModel
             Day = DateTime.Now.Day;
             Month = DateTime.Now.Month;
             Year = DateTime.Now.Year;
+            DayText = " Dzień";
+            NigthText = " Noc";
+            DayOffText = " Wolne";
+            ShortDayText = " Dzień krótka";
+
 
 
             database = new SQLiteAsyncConnection(dbPath);
             LoadData();
 
-            //List<ShiftDay> shifts = database.Table<ShiftDay>().ToListAsync().Result;
-            //if (shifts.Count == 0) throw new Exception("Dodaj jakikolwiek harmonogram");
-
-            //DatesColor1.Clear(); // czerwony = ED
-            //DatesColor2.Clear();
-            //DatesColor3.Clear(); /// niebieski = EN`
-
-            //foreach (var shift in shifts)
-            //{
-            //    if (shift.Shift == "ED")
-            //        DatesColor1.Add(shift.Date.Date);
-            //    else if (shift.Shift == "EN")
-            //        DatesColor2.Add(shift.Date.Date);
-            //    else if (shift.Shift == "W")
-            //        DatesColor3.Add(shift.Date.Date);
-            //}
         }
-
+          
         public async Task LoadData()
         {
             List<ShiftDay> shifts = await database.Table<ShiftDay>().ToListAsync();
@@ -152,11 +200,13 @@ namespace PigulaSchedule.ViewModel
                 Debug.WriteLine("Brak danych w tabeli ShiftDay. Dodaj jakikolwiek harmonogram.");
                 return;
             }
-
+            
             foreach (var shift in shifts)
             {
                 if (shift.Shift == "ED")
                     DatesColor1.Add(shift.Date.Date);
+                else if (shift.Shift == "E1")
+                    DatesColor4.Add(shift.Date.Date);
                 else if (shift.Shift == "EN")
                     DatesColor2.Add(shift.Date.Date);
                 else if (shift.Shift == "W")

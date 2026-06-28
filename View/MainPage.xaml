@@ -1,8 +1,8 @@
 ﻿<ContentPage
-    x:Class="PigulaSchedule.View.LoginPage"
+    x:Class="PigulaSchedule.View.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="{Binding LoginTitle}" >
+    Title="{Binding MainTitle}" >
 
     <Grid RowDefinitions="3*,9*,*,*">
         <Image Source="pigula.png"
@@ -37,7 +37,7 @@
                         Text="Otwórz kalendarz" HorizontalOptions="Start" />
 
 
-            <Button Grid.Column="1" Margin="5"   Style="{StaticResource Button}"
+            <Button Grid.Column="1" Margin="5"  
                         Command="{Binding ScanScheduleCommand}"
                         Text="Dodaj harmonogram" HorizontalOptions="End" />
 
@@ -50,7 +50,7 @@
 
 
 
-        <ActivityIndicator   Grid.Row="2" Margin="3" BackgroundColor="BurlyWood"
+        <ActivityIndicator   Grid.Row="2" Margin="3"  BackgroundColor="{StaticResource Primary}"
                                  IsRunning="{Binding IsBusy}"
                                  IsVisible="{Binding IsBusy}" />
 

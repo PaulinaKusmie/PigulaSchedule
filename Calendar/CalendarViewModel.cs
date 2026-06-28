@@ -8,13 +8,11 @@ namespace PigulaSchedule.Calendar;
 
 public class CalendarViewModel : INotifyPropertyChanged
 {
-    // ──────────────────────────────────────────────
-    // Kolekcje dat (bindowane do CalendarView)
-    // ──────────────────────────────────────────────
 
     private ObservableCollection<DateTime> _datesColor1 = new();
     private ObservableCollection<DateTime> _datesColor2 = new();
     private ObservableCollection<DateTime> _datesColor3 = new();
+    private ObservableCollection<DateTime> _datesColor4 = new();
     public ObservableCollection<DateTime> DatesColor1
     {
         get => _datesColor1;
@@ -33,9 +31,12 @@ public class CalendarViewModel : INotifyPropertyChanged
         set { _datesColor3 = value; OnPropertyChanged(); }
     }
 
-    // ──────────────────────────────────────────────
-    // SQLite
-    // ──────────────────────────────────────────────
+    public ObservableCollection<DateTime> DatesColor4
+    {
+        get => _datesColor4;
+        set { _datesColor4 = value; OnPropertyChanged(); }
+    }
+
 
     private readonly SQLiteAsyncConnection _db;
     private const string DbName = "calendar.db3";
@@ -53,9 +54,6 @@ public class CalendarViewModel : INotifyPropertyChanged
         await LoadFromDbAsync();
     }
 
-    // ──────────────────────────────────────────────
-    // Zapis / odczyt z SQLite
-    // ──────────────────────────────────────────────
 
     private async Task LoadFromDbAsync()
     {
@@ -73,21 +71,24 @@ public class CalendarViewModel : INotifyPropertyChanged
 
         DatesColor1 = new ObservableCollection<DateTime>(c1);
         DatesColor2 = new ObservableCollection<DateTime>(c2);
+
         DatesColor3 = new ObservableCollection<DateTime>(all
             .Where(e => e.ColorIndex == 3)
             .Select(e => e.Date)
             .OrderBy(d => d));
+
+
+        DatesColor4 = new ObservableCollection<DateTime>(all
+           .Where(e => e.ColorIndex == 4)
+           .Select(e => e.Date)
+           .OrderBy(d => d));
     }
 
-    /// <summary>
-    /// Dodaje datę do wybranego koloru (1, 2 lub 3).
-    /// Jeśli data już istnieje w którymkolwiek kolorze — najpierw ją usuwa.
-    /// </summary>
     public async Task MarkDateAsync(DateTime date, int colorIndex)
     {
         var normalized = date.Date;
 
-        // Usuń z obu kolekcji jeśli już istnieje
+   
         await UnmarkDateAsync(normalized);
 
         var entity = new MarkedDayEntity { Date = normalized, ColorIndex = colorIndex };
@@ -99,9 +100,7 @@ public class CalendarViewModel : INotifyPropertyChanged
             DatesColor2.Add(normalized);
     }
 
-    /// <summary>
-    /// Usuwa zaznaczenie daty (z obu kolorów).
-    /// </summary>
+
     public async Task UnmarkDateAsync(DateTime date)
     {
         var normalized = date.Date;
@@ -118,30 +117,28 @@ public class CalendarViewModel : INotifyPropertyChanged
 
         var inC3 = DatesColor3.FirstOrDefault(d => d.Date == normalized);
         if (inC3 != default) DatesColor3.Remove(inC3);
+    
+        var inC4 = DatesColor4.FirstOrDefault(d => d.Date == normalized);   
+        if(inC4 != default) DatesColor4.Remove(inC4);
     }
 
-    /// <summary>
-    /// Czyści wszystkie zaznaczenia.
-    /// </summary>
+
     public async Task ClearAllAsync()
     {
         await _db.DeleteAllAsync<MarkedDayEntity>();
         DatesColor1.Clear();
         DatesColor2.Clear();
+        DatesColor3.Clear();
+        DatesColor4.Clear();
     }
 
-    // ──────────────────────────────────────────────
-    // INotifyPropertyChanged
-    // ──────────────────────────────────────────────
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
-// ──────────────────────────────────────────────
-// Encja SQLite
-// ──────────────────────────────────────────────
 
 [Table("MarkedDayEntity")]
 public class MarkedDayEntity
@@ -149,7 +146,6 @@ public class MarkedDayEntity
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
 
-    /// <summary>Data przechowywana jako Ticks (long) — bezpieczne dla SQLite.</summary>
     public long DateTicks
     {
         get => Date.Ticks;
@@ -159,6 +155,6 @@ public class MarkedDayEntity
     [Ignore]
     public DateTime Date { get; set; }
 
-    /// <summary>1 = kolor 1, 2 = kolor 2</summary>
     public int ColorIndex { get; set; }
+
 }

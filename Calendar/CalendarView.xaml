@@ -42,7 +42,6 @@
                 CornerRadius="8"/>
         </Grid>
 
-        <!-- Nagłówki dni tygodnia -->
         <Grid x:Name="DayNamesGrid" ColumnSpacing="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -54,8 +53,6 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
         </Grid>
-
-        <!-- Siatka dni -->
         <Grid x:Name="DaysGrid" RowSpacing="4" ColumnSpacing="4">
             <Grid.GestureRecognizers>
                 <SwipeGestureRecognizer

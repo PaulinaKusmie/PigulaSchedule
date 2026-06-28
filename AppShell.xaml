@@ -8,8 +8,8 @@
     Title="PigulaSchedule">
 
     <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate view:LoginPage}"
-        Route="LoginPage" />
+        Title="Main"
+        ContentTemplate="{DataTemplate view:MainPage}"
+        Route="MainPage" />
 
 </Shell>

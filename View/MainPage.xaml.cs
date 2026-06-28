@@ -8,9 +8,9 @@ using PigulaSchedule.ViewModels;
 
 namespace PigulaSchedule.View
 {
-    public partial class LoginPage : ContentPage
+    public partial class MainPage : ContentPage
     {
-        public LoginPage(LoginViewModel vm )
+        public MainPage(MainViewModel vm)
         {
           
             InitializeComponent();

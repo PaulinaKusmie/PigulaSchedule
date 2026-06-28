@@ -14,22 +14,27 @@
                 HighlightedDatesColor1="{Binding DatesColor1}"
                 HighlightedDatesColor2="{Binding DatesColor2}"
                 HighlightedDatesColor3="{Binding DatesColor3}"
-                Color2="MidnightBlue"
+                HighlightedDatesColor4="{Binding DatesColor4}"
                 Color1= "BurlyWood"
-                Color3="DarkOliveGreen"/>
+                Color2="MidnightBlue"
+                Color3="DarkOliveGreen"
+                Color4="Fuchsia"
+                />
 
 
 
         </VerticalStackLayout>
 
-        <Grid Grid.Row="1" Height="20" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*"
-              VerticalOptions="Start" HorizontalOptions="FillAndExpand">
-            <Label Grid.Column="0" Grid.Row="0" Text=" " BackgroundColor="BurlyWood"/>
-            <Label Grid.Column="1" Grid.Row="0" Text=" Dzien"/>
-            <Label Grid.Column="0" Grid.Row="2" Text=" " BackgroundColor="MidnightBlue" />
-            <Label Grid.Column="1" Grid.Row="2" Text="  Noc"/>
-            <Label Grid.Column="0" Grid.Row="1" BackgroundColor="DarkOliveGreen" Text=" "/>
-            <Label Grid.Column="1" Grid.Row="1" Text="  Urlop"/>
+        <Grid Grid.Row="1" Height="20" ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*"
+              VerticalOptions="Start" >
+            <Label Grid.Column="0" Grid.Row="0" BackgroundColor="BurlyWood"/>
+            <Label Grid.Column="1" Grid.Row="0" Text="{Binding DayText}"/>
+            <Label Grid.Column="0" Grid.Row="2" BackgroundColor="MidnightBlue" />
+            <Label Grid.Column="1" Grid.Row="2" Text="{Binding NigthText}"/>
+            <Label Grid.Column="0" Grid.Row="1" BackgroundColor="DarkOliveGreen" />
+            <Label Grid.Column="1" Grid.Row="1" Text="{Binding DayOffText}"/>
+            <Label Grid.Column="0" Grid.Row="3" BackgroundColor="Fuchsia"/>
+            <Label Grid.Column="1" Grid.Row="3" Text="{Binding ShortDayText}" />
         </Grid>
 
 

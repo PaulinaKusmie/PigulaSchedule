@@ -14,7 +14,7 @@ namespace PigulaSchedule
     public static class ScheduleParser
     {
 
-        public static async Task<List<ShiftDay>> ParseAsync(string text)
+        public static Task<List<ShiftDay>> ParseAsync(string text)
         {
             var result = new List<ShiftDay>();
 
@@ -30,12 +30,11 @@ namespace PigulaSchedule
 
                 var dateStr = parts[0].Trim();
                 var shift = parts[1].Trim().ToUpper();
-
-                // Normalizacja zmian
                 shift = shift switch
                 {
                     "EDN" => "ED",
                     "ENN" => "EN",
+                    "E2" => "E1",
                     _ => shift
                 };
 
@@ -54,7 +53,7 @@ namespace PigulaSchedule
                 });
             }
 
-            return result;
+            return Task.FromResult(result);
         }
 
 

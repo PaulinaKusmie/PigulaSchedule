@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Application = Microsoft.Maui.Controls.Application;
 
 
 namespace PigulaSchedule
@@ -19,16 +20,27 @@ namespace PigulaSchedule
     public partial  class AddSchedule
     {
         private string ocrResult = string.Empty;
+        
 
         string dbPath = System.IO.Path.Combine(
             FileSystem.AppDataDirectory,
             "pigulaApp.db3");
 
-
-
+        [Obsolete]
         public async Task AddScheduleAsync()
         {
-            var photo = await MediaPicker.Default.CapturePhotoAsync();
+            string action = await Shell.Current.DisplayActionSheet(
+            "Wybierz źródło zdjęcia",
+            "Anuluj",
+            null,
+            "Zrób zdjęcie", "Wybierz z galerii");
+
+            FileResult? photo = action switch
+            {
+                "Zrób zdjęcie" => await MediaPicker.Default.CapturePhotoAsync(),
+                "Wybierz z galerii" => await MediaPicker.Default.PickPhotoAsync(),
+                _ => null
+            };
 
             if (photo == null)
                 return;
@@ -47,7 +59,7 @@ namespace PigulaSchedule
             }
         }
 
-
+        [Obsolete]
         private async Task<bool> IsCorrect(List<ShiftDay> shifts)
         {
             var edDays = shifts
@@ -56,20 +68,29 @@ namespace PigulaSchedule
             var enDays = shifts
                 .Where(x => x.Shift == "EN")
                 .Select(x => x.Date.ToString("dd.MM"));
-            var uDays = shifts
-                .Where(x => x.Shift == "U")
+            var wDays = shifts
+                .Where(x => x.Shift == "W")
                 .Select(x => x.Date.ToString("dd.MM"));
+            var E1Days = shifts
+            .Where(x => x.Shift == "E1")
+            .Select(x => x.Date.ToString("dd.MM"));
+
+     
+
             string message =
-                $"ED: {string.Join(", ", edDays)}\n\n" +
-                $"EN: {string.Join(", ", enDays)}\n\n" +
-                $"U: {string.Join(", ", uDays)}\n\n" +
+                $"Dzień: {string.Join(", ", edDays)}\n\n" +
+                $"Dzienna krótka: {string.Join(", ", E1Days)}\n\n" +
+                $"Noc: {string.Join(", ", enDays)}\n\n" +
+                $"Wolne: {string.Join(", ", wDays)}\n\n" +
                 "Czy zaimportować ten harmonogram?";
-            return await Microsoft.Maui.Controls.Application.Current!.MainPage!.DisplayAlert(
+
+            return await Utilitis.ShowPopUp(
                 "Import harmonogramu",
                 message,
                 "Tak",
                 "Nie");
         }
+
 
         private async Task<string> RecognizeWithGemini(byte[] imageBytes)
         {
@@ -96,8 +117,8 @@ namespace PigulaSchedule
                             {
                                 text = @"To jest grafik pracy na jeden miesiąc. 
                                         W pierwszym wierszu są daty (np. 01.05, 02.05...).
-                                        W trzecim wierszu są zmiany: ED, EDn, EN, ENn, W lub puste pole.
-                                        Traktuj EDn tak samo jak ED, i ENn tak samo jak EN.
+                                        W trzecim wierszu są zmiany: ED, EDn, EN, ENn, E1, E2, W lub puste pole.
+                                        Traktuj EDn tak samo jak ED, i ENn tak samo jak EN i E2 tak samo jak E1.
                                         Dla każdej daty wypisz zmianę w formacie DATA|ZMIANA.
                                         Jeśli pole jest puste wpisz DW.
                                         Jeśli pole ma W wpisz W.
@@ -106,7 +127,9 @@ namespace PigulaSchedule
                                         01.05|ED
                                         02.05|EN
                                         03.05|DW
-                                        04.05|W"
+                                        04.05|W 
+                                        04.05|E1"
+
                             }
                         }
                     }
@@ -144,7 +167,7 @@ namespace PigulaSchedule
             {
                 return  $" {result.DayName} {ShiftParser(result)}";
             }
-            return null;
+            return string.Empty;
         }
 
 
@@ -162,6 +185,10 @@ namespace PigulaSchedule
                     return "zmiana nocna neurochirurgiczna";
                 case "W":
                     return "urlop";
+                case "E1":
+                    return "zmiana dzienna krótka";
+                case "E2":
+                    return "zmiana dzienna krótka";
                 default:
                     return "dzień wolny";
             }
@@ -185,19 +212,27 @@ namespace PigulaSchedule
 
         private async Task SaveData(List<ShiftDay> jsonPath)
         {
-            var database = new SQLiteAsyncConnection(dbPath);
+            try
+            {
+                var database = new SQLiteAsyncConnection(dbPath);
+                await database.CreateTableAsync<ShiftDay>();
+                await database.InsertAllAsync(jsonPath);
+            }
+            catch (Exception ex)
+            {
 
+                await Utilitis.ShowPopUp("Błąd", $"Wystąpił błąd podczas zapisywania danych: {ex.Message}", "OK");
 
-            await database.CreateTableAsync<ShiftDay>();
-
-            await database.InsertAllAsync(jsonPath);
+            }
         }
 
 
 
         public async Task DeleteData()
         {
-            string action = await Shell.Current.DisplayActionSheet(
+
+
+            string action = await Utilitis.GetCurrentPage().DisplayActionSheet(
                 "Który miesiąc chcesz usunąć?",
                 "Anuluj",
                 null,
@@ -221,15 +256,26 @@ namespace PigulaSchedule
 
         private async Task DeleteMonth(DateTime month)
         {
-            var database = new SQLiteAsyncConnection(dbPath);
+            try
+            {
+                var database = new SQLiteAsyncConnection(dbPath);
 
-            var firstDay = new DateTime(month.Year, month.Month, 1).Ticks;
-            var lastDay = new DateTime(month.Year, month.Month,
-                DateTime.DaysInMonth(month.Year, month.Month), 23, 59, 59).Ticks;
+                var firstDay = new DateTime(month.Year, month.Month, 1).Ticks;
+                var lastDay = new DateTime(month.Year, month.Month,
+                    DateTime.DaysInMonth(month.Year, month.Month), 23, 59, 59).Ticks;
 
-            await database.ExecuteAsync(
-                "DELETE FROM ShiftDay WHERE Date >= ? AND Date <= ?",
-                firstDay, lastDay);
+                await database.ExecuteAsync(
+                    "DELETE FROM ShiftDay WHERE Date >= ? AND Date <= ?",
+                    firstDay, lastDay);
+            }
+            catch(Exception ex) {
+
+                    await Utilitis.ShowPopUp("Błąd", $"Wystąpił błąd podczas zapisywania danych: {ex.Message}", "OK");
+            }
+
+
         }
+
+
     }
 }
