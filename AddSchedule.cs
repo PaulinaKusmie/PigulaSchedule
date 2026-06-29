@@ -55,6 +55,7 @@ namespace PigulaSchedule
             var resultSchedule = await ScheduleParser.ParseAsync(ocrResult);
             if(await IsCorrect(resultSchedule))
             {
+                await DeleteOldData(resultSchedule.First());
                 await SaveData(resultSchedule);
             }
         }
@@ -226,8 +227,6 @@ namespace PigulaSchedule
             }
         }
 
-
-
         public async Task DeleteData()
         {
 
@@ -252,6 +251,12 @@ namespace PigulaSchedule
                     break;
             }
 
+        }
+
+        public async Task DeleteOldData(ShiftDay shiftDay)
+        {
+            var dateToDelete = shiftDay.Date.AddYears(1);
+            await DeleteMonth(dateToDelete);
         }
 
         private async Task DeleteMonth(DateTime month)

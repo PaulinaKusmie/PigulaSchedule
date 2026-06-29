@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="secrets.props" Condition="Exists('secrets.props')" />
 
 	<PropertyGroup>
 		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
@@ -48,16 +49,16 @@
 		<RunAOTCompilation>true</RunAOTCompilation>
 	  <AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
 	  <AndroidKeyStore>True</AndroidKeyStore>
-	  <AndroidSigningStorePass>Okon123!</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>myapp</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>Okon123!</AndroidSigningKeyPass>
+	  <AndroidSigningStorePass>$(AndroidSigningStorePass)</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>$(AndroidSigningKeyAlias)</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>$(AndroidSigningKeyPass)</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
 	  <AndroidKeyStore>True</AndroidKeyStore>
-	  <AndroidSigningStorePass>Okon123!</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>myapp</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>Okon123!</AndroidSigningKeyPass>
+	  <AndroidSigningStorePass>$(AndroidSigningStorePass)</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>$(AndroidSigningKeyAlias)</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>$(AndroidSigningKeyPass)</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -54,11 +54,20 @@
                                  IsRunning="{Binding IsBusy}"
                                  IsVisible="{Binding IsBusy}" />
 
-        <Label   Grid.Row="3" Margin="5"
+        <Label Grid.Row="3" Margin="5"
                      Text="{Binding ErrorMessage}"
                      TextColor="Red" />
 
+        <Grid IsVisible="{Binding IsBusy}"  Grid.Row="3" Margin="5"
+          BackgroundColor="#80000000">
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="White"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"/>
         </Grid>
+
+    </Grid>
 
 
 </ContentPage>

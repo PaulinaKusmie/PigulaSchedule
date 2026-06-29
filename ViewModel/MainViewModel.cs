@@ -80,7 +80,7 @@ public partial class MainViewModel : ObservableObject
     {
         string nextShift = await AddSchedule.LookForNextShift();
 
-        HelloText = $"Witaj! Dziś jest {DateTime.Now.Day} {Utiliti.IntToNameMonth(DateTime.Now.Month)} {DateTime.Now.Year}\n";
+        HelloText = $"Witaj! Dziś jest {DateTime.Now.Day} {Utilitis.IntToNameMonth(DateTime.Now.Month)} {DateTime.Now.Year}\n";
         if(!string.IsNullOrEmpty(nextShift)) NextShift = $"Następna zmiana {nextShift}";
 
 
@@ -89,8 +89,10 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task ScanScheduleAsync()
     {
+        IsBusy = true;
         try
         {
+            IsBusy = true;
             await addSchedule.AddScheduleAsync();
 
         }
