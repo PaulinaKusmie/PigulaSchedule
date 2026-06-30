@@ -163,6 +163,11 @@ AutoTest.Net/
 # Web workbench (sass)
 .sass-cache/
 
+Constans.cs
+myapp.keystore
+secrets.props
+
+
 # Installshield output folder
 [Ee]xpress/
 

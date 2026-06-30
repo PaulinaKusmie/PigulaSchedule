@@ -26,7 +26,7 @@ namespace PigulaSchedule
             FileSystem.AppDataDirectory,
             "pigulaApp.db3");
 
-        [Obsolete]
+
         public async Task AddScheduleAsync()
         {
             string action = await Shell.Current.DisplayActionSheet(
@@ -60,7 +60,6 @@ namespace PigulaSchedule
             }
         }
 
-        [Obsolete]
         private async Task<bool> IsCorrect(List<ShiftDay> shifts)
         {
             var edDays = shifts
@@ -91,7 +90,6 @@ namespace PigulaSchedule
                 "Tak",
                 "Nie");
         }
-
 
         private async Task<string> RecognizeWithGemini(byte[] imageBytes)
         {
