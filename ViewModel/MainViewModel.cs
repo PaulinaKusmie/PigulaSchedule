@@ -16,6 +16,8 @@ namespace PigulaSchedule.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+
+    #region props
     [ObservableProperty]
     private string email = string.Empty;
 
@@ -66,15 +68,19 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string errorMessage = string.Empty;
-
-
+    #endregion
 
     public MainViewModel(AddSchedule addSchedule) 
     {
         AddSchedule = addSchedule;
-        LoadDataAsync();
-
     }
+
+    public async Task InitializeAsync()
+    {
+        await LoadDataAsync();
+    }
+
+
 
     public async Task LoadDataAsync()
     {

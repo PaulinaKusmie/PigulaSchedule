@@ -49,20 +49,22 @@
 
 
 
-
-        <ActivityIndicator   Grid.Row="2" Margin="3"  BackgroundColor="{StaticResource Primary}"
-                                 IsRunning="{Binding IsBusy}"
-                                 IsVisible="{Binding IsBusy}" />
-
         <Label Grid.Row="3" Margin="5"
                      Text="{Binding ErrorMessage}"
                      TextColor="Red" />
 
-        <Grid IsVisible="{Binding IsBusy}"  Grid.Row="3" Margin="5"
-          BackgroundColor="#80000000">
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
+        <Grid IsVisible="{Binding IsBusy}"  ColumnDefinitions="*,*,*"  Grid.Row="3" Margin="5"
+          BackgroundColor="Transparent">
+  
+            <Label Grid.Column="0" Text="Proszę czekać..."
+                   TextColor="MediumPurple"
+                   FontSize="Medium"
+                   HorizontalOptions="Center"
+                VerticalOptions="Center"/>
+
+            <ActivityIndicator Grid.ColumnSpan="2" Grid.Column="1" IsRunning="{Binding IsBusy}"
                            IsVisible="{Binding IsBusy}"
-                           Color="White"
+                           Color="MediumPurple"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"/>
         </Grid>

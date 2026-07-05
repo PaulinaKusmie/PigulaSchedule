@@ -87,8 +87,8 @@ namespace PigulaSchedule
             return await Utilitis.ShowPopUp(
                 "Import harmonogramu",
                 message,
-                "Tak",
-                "Nie");
+                "Nie",
+                "Tak");
         }
 
         private async Task<string> RecognizeWithGemini(byte[] imageBytes)
@@ -156,16 +156,24 @@ namespace PigulaSchedule
 
         public async Task<string> LookForNextShift()
         {
-            var database = new SQLiteAsyncConnection(dbPath);
-            var today = DateTime.Today;
-
-            ShiftDay result = await database.FindWithQueryAsync<ShiftDay>(
-                "SELECT * FROM ShiftDay WHERE Date >= ? AND (Shift = 'ED' OR Shift = 'EN') ORDER BY Date ASC LIMIT 1", today);
-
-            if (result != null)
+            try
             {
-                return  $" {result.DayName} {ShiftParser(result)}";
+                var database = new SQLiteAsyncConnection(dbPath);
+                var today = DateTime.Today;
+
+                ShiftDay result = await database.FindWithQueryAsync<ShiftDay>(
+                    "SELECT * FROM ShiftDay WHERE Date >= ? AND (Shift = 'ED' OR Shift = 'EN') ORDER BY Date ASC LIMIT 1", today);
+
+                if (result != null)
+                {
+                    return $" {result.DayName} {ShiftParser(result)}";
+                }
             }
+            catch(Exception ex)
+            {
+      
+            }
+
             return string.Empty;
         }
 
@@ -195,16 +203,23 @@ namespace PigulaSchedule
 
         public async Task<string> LookForTodayShift()
         {
-            var database = new SQLiteAsyncConnection(dbPath);
-            var today = DateTime.Today;
-
-            ShiftDay result = await database.FindWithQueryAsync<ShiftDay>(
-                "SELECT * FROM ShiftDay WHERE Date >= ? ORDER BY Date ASC LIMIT 1", today);
-
-            if (result != null)
+            try
             {
-                return ShiftParser(result);
+                var database = new SQLiteAsyncConnection(dbPath);
+                var today = DateTime.Today;
+
+                ShiftDay result = await database.FindWithQueryAsync<ShiftDay>(
+                    "SELECT * FROM ShiftDay WHERE Date >= ? ORDER BY Date ASC LIMIT 1", today);
+
+                if (result != null)
+                {
+                    return ShiftParser(result);
+                }
             }
+            catch (Exception ex)
+            {
+            }
+        
              return null;
         }
 
@@ -242,7 +257,7 @@ namespace PigulaSchedule
                     await DeleteMonth(DateTime.Today);
                     break;
                 case "Poprzedni miesiąc":
-                    await DeleteMonth(DateTime.Today.AddMonths(-1));
+                    await DeleteMonth(DateTime.Today.AddMonths(-2));
                     break;
                 case "Następny miesiąc":
                     await DeleteMonth(DateTime.Today.AddMonths(1));
@@ -253,7 +268,7 @@ namespace PigulaSchedule
 
         public async Task DeleteOldData(ShiftDay shiftDay)
         {
-            var dateToDelete = shiftDay.Date.AddYears(1);
+            var dateToDelete = shiftDay.Date.AddYears(-1);
             await DeleteMonth(dateToDelete);
         }
 
@@ -273,7 +288,7 @@ namespace PigulaSchedule
             }
             catch(Exception ex) {
 
-                    await Utilitis.ShowPopUp("Błąd", $"Wystąpił błąd podczas zapisywania danych: {ex.Message}", "OK");
+                  
             }
 
 

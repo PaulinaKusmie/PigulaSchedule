@@ -11,4 +11,12 @@ public partial class CalendarPage : ContentPage
 
 
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is CalendarViewModel vm)
+            await vm.InitializeAsync();
+    }
 }

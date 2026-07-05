@@ -174,8 +174,6 @@ namespace PigulaSchedule.ViewModel
 
         public CalendarViewModel()
         {
-
-
             Day = DateTime.Now.Day;
             Month = DateTime.Now.Month;
             Year = DateTime.Now.Year;
@@ -184,18 +182,31 @@ namespace PigulaSchedule.ViewModel
             DayOffText = " Wolne";
             ShortDayText = " Dzień krótka";
 
-
-
             database = new SQLiteAsyncConnection(dbPath);
-            LoadData();
-
+  
         }
-          
+
+        public async Task InitializeAsync()
+        {
+            await LoadData();
+        }
+
+
         public async Task LoadData()
         {
-            List<ShiftDay> shifts = await database.Table<ShiftDay>().ToListAsync();
+            List<ShiftDay>? shifts = null;
+            try 
+            {
+                shifts = await database.Table<ShiftDay>().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Błąd podczas pobierania danych z tabeli ShiftDay: {ex.Message}");
+                return;
+            }
 
-            if (shifts.Count == 0)
+
+            if ( shifts == null || shifts.Count == 0 )
             {
                 Debug.WriteLine("Brak danych w tabeli ShiftDay. Dodaj jakikolwiek harmonogram.");
                 return;
