@@ -17,6 +17,7 @@ namespace PigulaSchedule.Repository
         public ShiftRepository()
         {
             _dbPath = Path.Combine(FileSystem.AppDataDirectory, "pigulaApp.db3");
+             Database.CreateTableAsync<ShiftDay>();
         }
 
         private SQLiteAsyncConnection Database => _connection ??= new SQLiteAsyncConnection(_dbPath);
@@ -60,7 +61,7 @@ namespace PigulaSchedule.Repository
         {
             try
             {
-                await Database.CreateTableAsync<ShiftDay>();
+               
                 await Database.InsertAllAsync(shifts);
             }
             catch (SQLiteException ex)

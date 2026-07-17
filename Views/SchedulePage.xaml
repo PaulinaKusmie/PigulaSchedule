@@ -1,6 +1,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PigulaSchedule.View.CalendarPage"
+             x:Class="PigulaSchedule.View.SchedulePage"
              xmlns:resources="clr-namespace:PigulaSchedule.Resources"
              xmlns:controls="clr-namespace:PigulaSchedule.Calendar"
              xmlns:local="clr-namespace:PigulaSchedule.Model"

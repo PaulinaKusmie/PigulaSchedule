@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
+using PigulaSchedule.Calendar;
 using PigulaSchedule.Interface;
 using PigulaSchedule.Repository;
 using PigulaSchedule.Services;
 using PigulaSchedule.View;
+using PigulaSchedule.ViewModel;
 using PigulaSchedule.ViewModels;
 
 
@@ -28,12 +30,15 @@ namespace PigulaSchedule
             });
 
 
-            builder.Services.AddTransient<MainViewModel>();
+            
             builder.Services.AddTransient<MainPage>();
-            builder.Services.AddTransient<AddSchedule>();
+            builder.Services.AddTransient<MainViewModel>();
+            builder.Services.AddTransient<SchedulePage>();
+            builder.Services.AddTransient<ScheduleViewModel>();
             builder.Services.AddSingleton<IShiftRepository, ShiftRepository>();
             builder.Services.AddTransient<IGeminiOcrService, GeminiOcrService>();
             builder.Services.AddTransient<AddSchedule>();
+     
 
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {

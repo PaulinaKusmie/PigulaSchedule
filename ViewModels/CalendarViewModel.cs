@@ -18,7 +18,7 @@ using XCalendar.Core.Models;
 
 namespace PigulaSchedule.ViewModel
 {
-    public partial class CalendarViewModel : ObservableObject
+    public partial class ScheduleViewModel : ObservableObject
     {
         [ObservableProperty] private int month = DateTime.Now.Month;
         [ObservableProperty] private int year = DateTime.Now.Year;
@@ -34,11 +34,11 @@ namespace PigulaSchedule.ViewModel
         [ObservableProperty] private ObservableCollection<DateTime> datesColor3 = new();
         [ObservableProperty] private ObservableCollection<DateTime> datesColor4 = new();
 
-        private SQLiteAsyncConnection database;
+ 
 
         private readonly IShiftRepository _shiftRepository;
 
-        public CalendarViewModel(IShiftRepository shiftRepository)
+        public ScheduleViewModel(IShiftRepository shiftRepository)
         {
             _shiftRepository = shiftRepository;
         }

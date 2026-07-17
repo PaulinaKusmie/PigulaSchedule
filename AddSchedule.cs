@@ -54,12 +54,12 @@ namespace PigulaSchedule
 
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
-            //var bytes = ms.ToArray();
+            var bytes = ms.ToArray();
 
-            //await Shell.Current.GoToAsync(nameof(Ohoto), new Dictionary<string, object>
-            //{
-            //    { "PhotoBytes", bytes }
-            //});
+            await Shell.Current.GoToAsync(nameof(Ohoto), new Dictionary<string, object>
+            {
+                { "PhotoBytes", bytes }
+            });
 
 
             var ocrResult = await _ocrService.RecognizeScheduleAsync(ms.ToArray());

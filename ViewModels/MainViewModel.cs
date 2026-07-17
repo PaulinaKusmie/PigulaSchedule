@@ -102,7 +102,7 @@ public partial class MainViewModel : ObservableObject
         {
 
             IsBusy = true;
-            await Shell.Current.GoToAsync(nameof(CalendarPage));
+            await Shell.Current.GoToAsync(nameof(SchedulePage));
 
 
         }

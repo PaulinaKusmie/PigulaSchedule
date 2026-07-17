@@ -3,9 +3,9 @@ using PigulaSchedule.ViewModel;
 
 namespace PigulaSchedule.View;
 
-public partial class CalendarPage : ContentPage
+public partial class SchedulePage : ContentPage
 {
-	public CalendarPage(CalendarViewModel vm)
+	public SchedulePage(ScheduleViewModel vm)
 	{
 		InitializeComponent();
 		BindingContext = vm;
@@ -17,7 +17,7 @@ public partial class CalendarPage : ContentPage
     {
         base.OnAppearing();
 
-        if (BindingContext is CalendarViewModel vm)
+        if (BindingContext is ScheduleViewModel vm)
             await vm.InitializeAsync();
     }
 }
