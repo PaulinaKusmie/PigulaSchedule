@@ -136,9 +136,7 @@ namespace PigulaSchedule
             }
             catch (Exception ex)
             {
-
                 await Utilitis.ShowPopUp("Błąd", $"Wystąpił błąd podczas zapisywania danych: {ex.Message}", "OK");
-
             }
         }
 

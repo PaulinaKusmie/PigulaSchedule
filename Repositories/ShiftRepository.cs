@@ -21,6 +21,10 @@ namespace PigulaSchedule.Repository
 
         private SQLiteAsyncConnection Database => _connection ??= new SQLiteAsyncConnection(_dbPath);
 
+
+        public async Task<List<ShiftDay>> GetAllShiftsAsync()
+         => await Database.Table<ShiftDay>().ToListAsync();
+
         public async Task<ShiftDay?> GetNextShiftAsync(DateTime fromDate)
         {
             return await Database.FindWithQueryAsync<ShiftDay>(
@@ -51,5 +55,7 @@ namespace PigulaSchedule.Repository
                 "DELETE FROM ShiftDay WHERE Date >= ? AND Date <= ?",
                 firstDay, lastDay);
         }
+
+     
     }
 }

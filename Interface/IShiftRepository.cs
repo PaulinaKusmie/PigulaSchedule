@@ -13,5 +13,6 @@ namespace PigulaSchedule.Interface
         Task<ShiftDay?> GetTodayShiftAsync(DateTime fromDate);
         Task SaveShiftsAsync(List<ShiftDay> shifts);
         Task DeleteMonthAsync(DateTime month);
+        Task<List<ShiftDay>> GetAllShiftsAsync();
     }
 }

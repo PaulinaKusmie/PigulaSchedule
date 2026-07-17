@@ -1,13 +1,14 @@
+using PigulaSchedule.Interface;
 using PigulaSchedule.ViewModel;
 
 namespace PigulaSchedule.View;
 
 public partial class CalendarPage : ContentPage
 {
-	public CalendarPage()
+	public CalendarPage(CalendarViewModel vm)
 	{
 		InitializeComponent();
-		BindingContext = new CalendarViewModel();
+		BindingContext = vm;
 
 
     }

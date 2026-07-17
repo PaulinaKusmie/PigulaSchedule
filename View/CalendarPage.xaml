@@ -30,7 +30,7 @@
             <Label Grid.Column="0" Grid.Row="0" BackgroundColor="BurlyWood"/>
             <Label Grid.Column="1" Grid.Row="0" Text="{Binding DayText}"/>
             <Label Grid.Column="0" Grid.Row="2" BackgroundColor="MidnightBlue" />
-            <Label Grid.Column="1" Grid.Row="2" Text="{Binding NigthText}"/>
+            <Label Grid.Column="1" Grid.Row="2" Text="{Binding NightText}"/>
             <Label Grid.Column="0" Grid.Row="1" BackgroundColor="DarkOliveGreen" />
             <Label Grid.Column="1" Grid.Row="1" Text="{Binding DayOffText}"/>
             <Label Grid.Column="0" Grid.Row="3" BackgroundColor="Fuchsia"/>
