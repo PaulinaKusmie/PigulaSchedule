@@ -27,22 +27,46 @@ namespace PigulaSchedule.Repository
 
         public async Task<ShiftDay?> GetNextShiftAsync(DateTime fromDate)
         {
-            return await Database.FindWithQueryAsync<ShiftDay>(
-                "SELECT * FROM ShiftDay WHERE Date >= ? AND (Shift = 'ED' OR Shift = 'EN' OR Shift = 'E1') ORDER BY Date ASC LIMIT 1",
-                fromDate);
+            try
+            {
+                return await Database.FindWithQueryAsync<ShiftDay>(
+              "SELECT * FROM ShiftDay WHERE Date >= ? AND (Shift = 'ED' OR Shift = 'EN' OR Shift = 'E1') ORDER BY Date ASC LIMIT 1",
+              fromDate);
+            }
+            catch (SQLiteException ex)
+            {
+                throw new Exception($"Bład pobierania danych dla następnej zmiany {fromDate}: {ex.Message}");
+            }
+          
         }
 
         public async Task<ShiftDay?> GetTodayShiftAsync(DateTime fromDate)
         {
-            return await Database.FindWithQueryAsync<ShiftDay>(
-                "SELECT * FROM ShiftDay WHERE Date >= ? ORDER BY Date ASC LIMIT 1",
-                fromDate);
+            try
+            {
+                var todayShift = await Database.FindWithQueryAsync<ShiftDay>(
+                    "SELECT * FROM ShiftDay WHERE Date = ?",
+                    fromDate);
+                return todayShift;
+            }
+            catch (SQLiteException ex)
+            {
+                throw new Exception($"Bład pobierania danych dla dnia {fromDate}: {ex.Message}");
+            }
+
         }
 
         public async Task SaveShiftsAsync(List<ShiftDay> shifts)
         {
-            await Database.CreateTableAsync<ShiftDay>();
-            await Database.InsertAllAsync(shifts);
+            try
+            {
+                await Database.CreateTableAsync<ShiftDay>();
+                await Database.InsertAllAsync(shifts);
+            }
+            catch (SQLiteException ex)
+            {
+                throw new Exception($"Bład zapisywania danych: {ex.Message} ");
+            }
         }
 
         public async Task DeleteMonthAsync(DateTime month)
@@ -51,11 +75,19 @@ namespace PigulaSchedule.Repository
             var lastDay = new DateTime(month.Year, month.Month,
                 DateTime.DaysInMonth(month.Year, month.Month), 23, 59, 59).Ticks;
 
-            await Database.ExecuteAsync(
-                "DELETE FROM ShiftDay WHERE Date >= ? AND Date <= ?",
-                firstDay, lastDay);
+            try
+            {
+                await Database.ExecuteAsync(
+                    "DELETE FROM ShiftDay WHERE Date >= ? AND Date <= ?",
+                    firstDay, lastDay);
+            }
+            catch (SQLiteException ex)
+            {
+                throw new Exception($"Bład pobierania danych dla miesiąca {month}: {ex.Message}");
+            }
+
+
         }
 
-     
     }
 }

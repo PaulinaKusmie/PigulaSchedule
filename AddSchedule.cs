@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using PigulaSchedule.Interface;
 using PigulaSchedule.Model;
+using PigulaSchedule.View;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,13 @@ namespace PigulaSchedule
 
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
+            //var bytes = ms.ToArray();
+
+            //await Shell.Current.GoToAsync(nameof(Ohoto), new Dictionary<string, object>
+            //{
+            //    { "PhotoBytes", bytes }
+            //});
+
 
             var ocrResult = await _ocrService.RecognizeScheduleAsync(ms.ToArray());
             var resultSchedule = await ScheduleParser.ParseAsync(ocrResult);
@@ -67,8 +75,18 @@ namespace PigulaSchedule
 
         public async Task<string> LookForNextShift()
         {
-            var result = await _shiftRepository.GetNextShiftAsync(DateTime.Today);
-            return result != null ? $" {result.DayName} {ShiftParser(result)}" : string.Empty;
+            try
+            {
+                var result = await _shiftRepository.GetNextShiftAsync(DateTime.Today);
+                return result != null ? $" {result.DayName} {ShiftParser(result)}" : string.Empty;
+            }
+            catch (Exception ex)
+            {
+                await Utilitis.ShowPopUp("Błąd", $"Błąd podczas pobierania danych z tabeli ShiftDay: {ex.Message}", "OK");
+                return string.Empty;
+            }
+              
+         
         }
 
         private async Task<bool> IsCorrect(List<ShiftDay> shifts)
@@ -142,27 +160,35 @@ namespace PigulaSchedule
 
         public async Task DeleteData()
         {
-
-
-            string action = await Utilitis.GetCurrentPage().DisplayActionSheet(
-                "Który miesiąc chcesz usunąć?",
-                "Anuluj",
-                null,
-                "Bieżący miesiąc",
-                "Poprzedni miesiąc", "Następny miesiąc");
-
-            switch (action)
+            try
             {
-                case "Bieżący miesiąc":
-                    await _shiftRepository.DeleteMonthAsync(DateTime.Today);
-                    break;
-                case "Poprzedni miesiąc":
-                    await _shiftRepository.DeleteMonthAsync(DateTime.Today.AddMonths(-1));
-                    break;
-                case "Następny miesiąc":
-                    await _shiftRepository.DeleteMonthAsync(DateTime.Today.AddMonths(1));
-                    break;
+                string action = await Utilitis.GetCurrentPage().DisplayActionSheet(
+                              "Który miesiąc chcesz usunąć?",
+                              "Anuluj",
+                              null,
+                              "Bieżący miesiąc",
+                              "Poprzedni miesiąc", "Następny miesiąc");
+
+                switch (action)
+                {
+                    case "Bieżący miesiąc":
+                        await _shiftRepository.DeleteMonthAsync(DateTime.Today);
+                        break;
+                    case "Poprzedni miesiąc":
+                        await _shiftRepository.DeleteMonthAsync(DateTime.Today.AddMonths(-1));
+                        break;
+                    case "Następny miesiąc":
+                        await _shiftRepository.DeleteMonthAsync(DateTime.Today.AddMonths(1));
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                await Utilitis.ShowPopUp("Błąd", $"Wystąpił błąd: {ex.Message}", "OK");
+                return;
+            }
+
+              
 
         }
 
@@ -173,8 +199,16 @@ namespace PigulaSchedule
         /// <returns></returns>
         public async Task DeleteOldData(ShiftDay shiftDay)
         {
-            var dateToDelete = shiftDay.Date.AddYears(-1);
-            await _shiftRepository.DeleteMonthAsync(dateToDelete);
+            try
+            {
+                var dateToDelete = shiftDay.Date.AddYears(-1);
+                await _shiftRepository.DeleteMonthAsync(dateToDelete);
+            }
+            catch (Exception ex)
+            {
+                await Utilitis.ShowPopUp("Błąd", $"Wystąpił błąd : {ex.Message}", "OK");
+                return;
+            }
         }
 
      
