@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using PigulaSchedule.Interface;
+using PigulaSchedule.Repository;
+using PigulaSchedule.Services;
 using PigulaSchedule.View;
 using PigulaSchedule.ViewModels;
 
@@ -17,8 +20,19 @@ namespace PigulaSchedule
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+
+            builder.Services.AddHttpClient("GeminiClient", client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(60); 
+            });
+
+
             builder.Services.AddTransient<MainViewModel>();
             builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<AddSchedule>();
+            builder.Services.AddSingleton<IShiftRepository, ShiftRepository>();
+            builder.Services.AddTransient<IGeminiOcrService, GeminiOcrService>();
             builder.Services.AddTransient<AddSchedule>();
 
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>

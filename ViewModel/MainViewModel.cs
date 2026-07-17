@@ -26,32 +26,13 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isBusy;
-
+    [ObservableProperty]
     private string helloText;
 
-    public string HelloText
-    {
-        get => helloText;
-        set
-        {
-            helloText = value;
-            OnPropertyChanged();
-        }
+    [ObservableProperty]
+    private string nextShiftText;
 
-    }
-
-
-    private string nextShift;
-
-    public string NextShift
-    {
-        get => nextShift;
-        set
-        {
-            nextShift = value;
-            OnPropertyChanged();
-        }
-    }
+ 
 
 
     private AddSchedule addSchedule;
@@ -87,7 +68,7 @@ public partial class MainViewModel : ObservableObject
         string nextShift = await AddSchedule.LookForNextShift();
 
         HelloText = $"Witaj! Dziś jest {DateTime.Now.Day} {Utilitis.IntToNameMonth(DateTime.Now.Month)} {DateTime.Now.Year}\n";
-        if(!string.IsNullOrEmpty(nextShift)) NextShift = $"Następna zmiana {nextShift}";
+        if(!string.IsNullOrEmpty(nextShift)) NextShiftText = $"Następna zmiana {nextShift}";
 
 
     }
@@ -95,11 +76,10 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task ScanScheduleAsync()
     {
-        IsBusy = true;
         try
         {
             IsBusy = true;
-            await addSchedule.AddScheduleAsync();
+            await AddSchedule.AddScheduleAsync();
 
         }
         catch (Exception ex)
@@ -128,7 +108,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Error of OpenCalendarPage: {ex.Message}";
+            ErrorMessage = $"Bład otwierania strony kalendarza: {ex.Message}";
         }
         finally
         {
@@ -141,7 +121,7 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-            await addSchedule.DeleteData();
+            await AddSchedule.DeleteData();
 
         }
         catch (Exception ex)
