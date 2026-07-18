@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PigulaSchedule.Interface;
+using PigulaSchedule.Interfaces;
 using PigulaSchedule.Model;
 using PigulaSchedule.Resources;
 using SQLite;
@@ -36,11 +37,11 @@ namespace PigulaSchedule.ViewModel
 
  
 
-        private readonly IShiftRepository _shiftRepository;
+        private readonly IShiftQuery _shiftQueryService;
 
-        public ScheduleViewModel(IShiftRepository shiftRepository)
+        public ScheduleViewModel(IShiftQuery shiftQueryService)
         {
-            _shiftRepository = shiftRepository;
+            _shiftQueryService = shiftQueryService;
         }
 
         public async Task InitializeAsync()
@@ -57,7 +58,7 @@ namespace PigulaSchedule.ViewModel
             List<ShiftDay>? shifts = null;
             try
             {
-                shifts = await _shiftRepository.GetAllShiftsAsync();
+                shifts = await _shiftQueryService.GetAllShiftsAsync();
             }
             catch (Exception ex)
             {

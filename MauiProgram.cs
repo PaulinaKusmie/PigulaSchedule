@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using PigulaSchedule.Calendar;
 using PigulaSchedule.Interface;
+using PigulaSchedule.Interfaces;
 using PigulaSchedule.Repository;
 using PigulaSchedule.Services;
 using PigulaSchedule.View;
@@ -34,7 +35,7 @@ namespace PigulaSchedule
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<MainViewModel>();
             builder.Services.AddTransient<SchedulePage>();
-            builder.Services.AddTransient<ScheduleViewModel>();
+            builder.Services.AddSingleton<IShiftQuery, ShiftRepository>();
             builder.Services.AddSingleton<IShiftRepository, ShiftRepository>();
             builder.Services.AddTransient<IGeminiOcrService, GeminiOcrService>();
             builder.Services.AddTransient<AddSchedule>();
